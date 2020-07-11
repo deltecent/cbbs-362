@@ -1,0 +1,813 @@
+		CBBSOPER.DOC	
+		by Ward Christensen
+		as of 09/28/83 21:52:46
+
+	CONTENTS
+
+1. Operator command documentation
+   1a. quick command reference
+   1b. command details
+2. Maintaining CBBS.
+3. CBBS Utilities
+4. File format documentation
+	################
+
+	1. OPERATOR COMMAND DOCUMENTATION
+
+     This is documentation on additional commands made available to CBBSç
+operators, which are not available to normal CBBS users.  They areç
+allowed only if a correct password has been entered.  (Two exceptions: "ç
+HI " and "^CHA" are NOT operator-only commands, but are undocumented andç
+expected to be used only by the operator to start a CHAT function).
+     To enter the operator mode password, type the command PASS.  Youç
+will be prompted, but it will echo "x" instead of what you key.  ^R WILLç
+echo what you have typed so far in case you have a noisy line and reallyç
+want to see exactly what has been typed.  If the password is correct,ç
+you will be prompted just with the function menu, or if there is anç
+operator file "NOTES", it will automatically be typed.  If an incorrectç
+password is entered, then the "I don't know what you mean by "password",ç
+so-and-so" will be typed, and the line:
+	 "]PASSWORD name"
+will be put in the LOG file, as a "log" of an "attempted securityç
+violation".
+     If you are in operator mode and want to disallow operator commands,ç
+(such as when turning the system back to another user) just type inç
+PASS, and press return as the password, which will be invalid and willç
+turn off the "operator mode" bit, (and log a PASSWORD violation).
+
+
+		1a. CBBS OPERATOR COMMAND
+		       Quick reference
+
+CONT		Enter another message, to same person as last msg.
+		(Subject of (CONT'D) is automatically entered)
+		Version 3.6 made this command available to all users.
+DIR [dsk:][filename.type]  If no disk or file, use 4 letters: "DIR ".
+DIRN		as above, but prints only # of files
+DUMP addr	dumps memory starting at addr.  Press ^K to stop
+ENTR addr.data	patch one byte of hex data to memory
+ERA [dsk:]filename.typ  ? or * not allowed as first char of filename.
+HOLD		keep phone line from timing out and hanging up.
+bHIb		(b=blank) go into CHAT mode without bell ringing.
+K;nnn;nnn;nnn	Kill msgs (special features for operator)
+LOGIN;firstname;lastname;date;time;msg#
+LOGIN;firstname;lastname;msg#		(if you have no clock board)
+		Enter a user into the log file (for testing)
+NAME;firstname;lastname; Re-enter name (re-logs, scans NEXT, etc)
+NOTE		Append data to the NOTES file.
+PRINT		Turn on/off a BIOS-list device print switch
+PURGE		Purge SUMMARY of flagged killed msgs.
+PURGEN		Purge with no details shown
+SLOW		Slow down output for local testing to simulate the speed
+		characters would show up if a modem were being used.
+		Repeat if desired.  4 times goes back to fast.
+STAT		Show free space on all logged in disks
+TWIT		Allow direct entry of names into NEXT file.
+TYPE [dsk:]filename.type	types the file.
+		^C skips to next "]" or bell
+		^K aborts
+		^X skips 10 lines
+TYPEH	see type	Types only lines starting "]"
+TYPEK	see type	Types lines starting "]" and next line
+USER n		change to user n.
+XCPM		Exit to CP/M
+^CHA		Go into chat, but log each line to "chatlog".
+		(Note this is "^" then "C", not a control-C)
+		TO CLOSE THE FILE you must end chat by typing a
+		"^" char in column 1 of your last line, then hitting
+		return.  Don't control-K, that will not close CHATLOG.
+
+
+		CBBS OPERATOR COMMAND HANDBOOK
+
+		1b.    COMMAND DETAILS
+
+
+     Here are the commands which are made available in operator mode. ç
+"[" and "]" are used to delimit optional data, i.e. [disk:]fn.ft meansç
+MESSAGE.X24 OR B:LOG for example.
+
+
+CONT
+####
+     When you have entered a message, and 16 lines aren't enough, simplyç
+save the message, then use CONT to put in the next message.  It entersç
+the same date, who to, and for the subject, inserts "(CONT'D)".
+
+
+DIR [[disk:]fn[.ft]]
+###
+Ex: DIR B:*.*
+
+Ex: DIR B:LOG
+
+     This produces an across-the-screen directory listing.  The fileç
+size in K is shown.   The count of files matching the criteria is shown.
+     NOTE if you just want to type DIR, you'll have to type
+DIRb where b is a blank, since the command look-up is for 4 characters. ç
+Normally you would supply a disk, anyway, i.e. 'DIR B:'.  NOTE that DIRç
+B: now defaults to B:*.* - it didn't used to.
+
+
+DIRN [[dsk:]filename[.type]]]
+####
+Ex: DIRN B:
+
+     This is just like DIR except that no details are shown, only aç
+count of the number of files.  Used to see how full the directory is.
+
+
+DUMP startaddr
+####
+Ex: DUMP FE0
+
+     This does an interpreted (i.e. hex + Ascii) dump, which "runsç
+forever".  Press K to kill it.
+     In CBBS/Chicago, we have our logging TTY equate TRUE in theç
+software, but may or may not have a printer hooked up. Thus there is theç
+256 byte wrap-around buffer sitting in memory, showing the last 256ç
+bytes keyed by users.  So, when I log on, and go into operator modeç
+(i.e. I have keyed perhaps 40 characters) I dump the log buffer, to seeç
+what the last caller was typing.  It is sometimes useful to detectç
+someone having trouble, and leaving a msg which might help.
+
+
+ENTR addr.data
+####
+Ex: ENTR 1234.F1
+
+     Yes, this is one-lousy-byte-at-a-time, but something is better thanç
+nothing.  I used the "filename formatting" to make it simple to find theç
+byte.  Yes, this could be improved, but typically it is for patching oneç
+of CBBS switches while testing, or some such.  No, you couldn't patch anç
+instruction which is being executed as you might get 1 byte of addressç
+patched, hit the instruction, go off to never-never-land, before gettingç
+the second byte patched.
+
+
+ERA [disk:]fn[.ft]
+###
+Ex: ERA B:BULLETIN.BAK
+
+We mostly use this command to ERA B:NOTES, i.e. the file containingç
+notes from one operator to another (or to themselves).  Otherwise, it isç
+mostly used when a disk is found to be unusually full, because youç
+forgot to ERA a .BAK file after an edit.  Wild cards are allowed ("?"ç
+and "*"), but not in the first position of the filename.  Thus ERA *.*ç
+is not permitted, but ERA M*.BAK is.
+
+
+bHIb
+####
+
+If a user asked to "CHAT", but you didn't arrive in time to ^C into
+chat mode, typing space-HI-space will drop you right into CHAT mode. ç
+NOTE this is NOT an operator function - merely one that is onlyç
+documented to operators.  See also ^CHA command to drop into CHAT withç
+disk logging.
+
+
+HOLD
+####
+     When testing or working with CBBS, the "auto hang up on someone whoç
+walked away" may be annoying.  Typing HOLD will disable this function. ç
+Typing it again will re-enable the timeout.
+
+
+K;nnn;nnn;nnn	
+#
+    Normal users can use this command, but operators may "stack"ç
+additional messages to kill by separating them with semicolons.  Also,ç
+messages shorthanding is supported, so to kill 1734, 1735, 1742, andç
+1802, type in:
+	k;1734;5;42;802
+note that after keying in the first message in full, remaining messageç
+numbers may be abbreviated to their sufficiently explicit unique right≠
+most digits.
+
+LOGIN;firstname;lastname;date;time;msg#
+ or
+LOGIN;firstname;lastname;msg#
+
+#####
+    YOU WILL NOT LIKELY ever HAVE TO or WANT TO use this.  In testing, I
+use it to enter someone in the file USER so when they call in, CBBS willç
+report their last call.  No prompting is done.  Be sure you enter itç
+correctly.  NOTE the time is only HH:MM (not :SS).
+    The second form is if you have no clock board.  Logging does not
+worry about date or time so that is not present.
+    I have found mis-use of this command to easily screw up the USERç
+file, so back it up or verify it after changing, or DON'T USE THISç
+COMMAND.
+
+
+NAME		or
+####
+NAME;firstname;lastname
+     This is simply a command which JMPs to the beginning of the dialogç
+"What is your first name", so it allows an operator to re-log on asç
+someone else.  Typical use is prior to to re-entering  a message so itç
+will be "from" someone else, (i.e. using the (G)et msg subcommand ofç
+message entry, editing it, saving it as a new msg).
+     Another use is when you have company, and are showing CBBS off, andç
+logged on as yourself, then want a guest to go in under their own name. ç
+Note: in the LOG, ",R" is placed after the name, to show this is a re≠
+log.
+     Caution - don't forget the ";" between first and last name if you
+enter it as name;firstname;lastname.
+
+
+NOTE
+####
+     This function allows an operator to key into a file called NOTES,ç
+which is then automatically typed when someone enters operator mode. ç
+Use ERA NOTES (or ERA B:NOTES) to delete it.  Use TYPE NOTES (or TYPEç
+B:NOTES) to see it again.   If you have seen the notes, typing control-Kç
+(or just K) will abort it the typing and go on.
+
+
+NOTEN
+#####
+     Just like NOTE, but doesn't append a date/time line.  Use it to addç
+notes when you don't want to waste the space, such as when you haveç
+entered notes, and now thought of "something more" to say.  Use NOTEN.
+
+
+PRINT
+#####
+     For local testing, typing PRINT causes all CBBS output to beç
+directed to your CP/M BIOS list device.  A second PRINT command willç
+turn this off.  Think of it as if it were ^P in CP/M command mode.
+
+
+PURGE
+#####
+     This command makes a single pass thru the summary file physicallyç
+deleting all Kill-flagged messages.  A Kill-flagged message has an "X"ç
+stored as the first byte of the # of lines.
+     PURGE works by creating a file WORKFILE, then passing the summaryç
+file thru memory one at a time deleting the "X"ed ones and writing goodç
+ones to WORKFILE.  When done, SUMMARY is erased, and WORKFILE is renamedç
+to SUMMARY.
+     N-O-T-E that you must have enough space on the disk for theç
+workfile.  Use STAT to determine the space left, and DIR SU* to see theç
+size of the summary file.  STAT must show >= the #K size of the SUMMARY.
+
+
+PURGEN
+######
+     Like PURGE, but doesn't show what was purged.  Faster when runningç
+remotely.
+
+
+SLOW
+####
+     Doing CBBS development, testing it locally, does not adequatelyç
+simulate how it would "look" to a remote user because things "scroll by"ç
+so fast.  SLOW puts a time delay in the console output routine.  Typingç
+it a 2nd or 3rd time, slows it down even more.  Typing SLOW a 4th time,ç
+restores the system to no-slowdown.
+
+
+STAT
+####
+Ex: STAT
+     In 7/81 this was completely rewritten to dynamically determineç
+which disks are logged in, and determine the space left on each loggedç
+in disk.  (Finally!) NOTE that if you run CBBS all off of one disk, butç
+have a second disk, you'll have to do something to explicitly log in theç
+second disk before STAT will show it up.  STAT b: doesn't work.  Do dirç
+b:, K out of it, then STAT, which will show all logged in disks (nowç
+including b:)  If the LOG or other automatically-referenced file is onç
+B:, then it will show up in STAT.  NOTE STAT would "bomb" on CP/M+ (i.e.ç
+CP/M 3.0) because the allocation bit map it uses "just isn't there"ç
+where it used to be.
+
+
+TWIT
+####
+Ex: TWIT<cr>
+[donald,duck,]*<cr>
+<cr>
+
+Writes [DONALD,DUCK,]*<CR>
+to the NEXT file, so Donald Duck will be a "twit", i.e. the "*" says
+can't enter or kill msgs, and has only 1 line of comments.  Note that
+input is translated to upper case, and ";" is expanded to cr/lf.  Theç
+above coule have been entered as: TWIT;[donald,duck,]*;;
+
+This command could also be used to write a "flash" to the NEXT file.
+To change it or put in a new one, you'd have to use a traditionalç
+editor.  Remember if a >> Flash << is to ALL, (*,*) then it should endç
+with "]+" so scanning of the NEXT file for TWITS etc will continue.
+
+
+TYPE [disk:]filename[.type][,search string]
+####
+Ex: type b:log
+
+Ex: type b:log,12345
+
+     Type any ASCII file.  ^X skips 10 lines, ^C skips to the nextç
+"delimiter", i.e. a bell, or a "]".  ^K aborts the type.  ^S suspendsç
+it.  Once ^C has been used, a different subroutine has been entered, soç
+^X no longer skips 10 lines (a kludge, but...).
+     The search string allows typing the log (or other files) startingç
+at a particular character string.  I use this to type the log startingç
+at the user number one higher than the number I got the last time Iç
+called in.
+     Typing a return will cause TYPE to skip to the NEXT occurrence ofç
+the search string.  My most common use of this is: type b:killed,] whichç
+stops at the header of each killed msg.  When I have seen that the rightç
+person killed the message, I press return to skip to the next.
+     Note that this string search does a RDBYTE from the disk, andç
+compare, so does not "back up" properly when it finds data whichç
+partially duplicates the start of the string. Thus "TYPE B:LOG,0999"ç
+wouldn't always match "00999" in the LOG because the 0 would be comparedç
+to the zero, and match, then the 9 would mismatch the next 0 read fromç
+the file. The next compare would be the leading zero of the searchç
+string, to the next character read from the file (9), so it wouldn'tç
+match.  (Sorry, but something is better than nothing, and this explainsç
+the seldom-occurring "why didn't it find it" problem.)
+
+
+TYPEH     (see TYPE for operands)
+#####
+     This is an outgrowth of the NEWS function for printing onlyç
+headlines.  TYPEH types a file, but only lines with a "]" in them, andç
+then only from the character after the "]" on.
+
+
+TYPEK     (see TYPE for operands)
+#####
+     TYPEK was invented to check the KILLED file to see that the personç
+killing a message was the "right" person.  If you, for example: "TYPEKç
+B:KILLED", you will see 2 lines printed for each message, the firstç
+being the "killer", and the second, the FROM/TO line of the messageç
+header.  A blank line is then printed.  See also under TYPE, the idea ofç
+TYPE KILLED,]
+
+
+USER n
+####
+    Issues the CP/M set user call.  This allows the DIR,  ERA, TYPEç
+(etc) commands to handle different users.
+    Note that when in operator mode, the modemming functions (M;S andç
+M;R) do not use the default user - they use the user set by the USERç
+command.  Here's how it works:  the file transfer functions have a fieldç
+called XUSER, the current user for file transfers, D (dir), T (type),ç
+etc.  For a normal user, this is the user # assigned from the passwordç
+file, or set in the M function by the U sub-function.  In operator mode,ç
+when you say USER n, "n" is stored in XUSER so file transfers will notç
+go back to 0 or whatever was in XUSER.  If you go back out of operatorç
+mode, having typed a USER command, XUSER will still be what it was. ç
+Thus, (sorry for this hack) if you want to get out of operator mode andç
+have file transfer work as if you hadn't been in it, set the user to 0ç
+or whatever should be in XUSER, then type PASS, and put in a badç
+password.  Then go into M, and the user number should be right.
+    You can screw yourself up very easily with the U command.  Afterç
+using it, be certain to set it back to the user under which yourç
+message, and other CBBS files are.  For example, if CBBS is in user 15,ç
+but you do USER 0, then say (G)ood bye, it will write the log into userç
+0, not user 15.  This is not serious, as it was only the elapsed time,ç
+and it will be OK for the next user.  CBBS needs some cleaning up inç
+this area.
+    Think of it this way: if you are NOT in operator mode and use the Mç
+command, and enter a password, you are under control of the M command. ç
+You can use U within M to set the user.  When you return to normal CBBSç
+operation, the user is automatically reset.  IF HOWEVER you are inç
+operator mode, then M functions such as the default disk and user, areç
+bypassed and must be explicitly stated.  Thus to send a file from b:ç
+user 1 you can either be in non-operator mode, go into M, and if set upç
+in the password file to ALLOW you to go to user 1, do u;1.  Thenç
+s;filename.  If however you are in operator mode, you'll have to use theç
+USER n command, and use explicit disk (a: b:...) when referring toç
+files.  
+
+
+XCPM
+####
+     This is simply a JMP 0.  It assumes that you have modem I/O in yourç
+BIOS, and that you will be able to continue operation remotely, in CP/Mç
+itself.
+     Note that if you are autoloading CBBS on a cold boot (i.e. runningç
+1.4 or later, and have patched "CBBS" into the command buffer at CCP + 8ç
+(displacement 8 at track 0 sector 2) and 04H at CCP+7 (the commandç
+length) then you must ensure that your WARM start routine JMPS to CCP+3,ç
+which is the entry point to CCP to NOT autoload CBBS (or whatever is inç
+the command buffer)
+     If you do not wish to re-enter CBBS to hang up, you will have toç
+put together a little .COM file which just outputs the appropriate bitsç
+for your system.  For CBBS/Chicago, it outputs to the port to turn offç
+the diskette spin motors, and outputs to the PMMI to go back on hook. ç
+We call it PMMIBYE.COM.  Note that this works only if the system re≠
+boots on phone ring, i.e. wouldn't work with a REINIT system.  In aç
+REINIT system, hang up by re-executing CBBS, and when it is loaded justç
+hang up.
+
+
+^CHA
+####
+    This command is NOT operator protected.  It goes directly into CHATç
+mode, but each line is written to the "CHATLOG" file.  When logging youç
+should NOT ^K out of CHAT when done, - instead type any line startingç
+with "^" which will cause CHATLOG to be closed, and return control toç
+the main function menu.
+
+		       ----------------
+
+     Any other command you feel would be of value?  Someday I may tackleç
+REName, because in CP/M we REN Lyymmdd=LOG whenever the log gets nearç
+128 sectors (1 extent).  Let me know if you have any ideas.
+
+	################
+
+	2. MAINTAINING CBBS.
+
+- Back up the system periodically so not many messages would be lost inç
+the event of a total system crash.  Weekly is probably about right.
+
+- Locally, or when you call in and go into operator mode, check theç
+log/killed disk to see that it has enough free space.  I like to alsoç
+review the LOG file, manually keeping track of the caller # the lastç
+time I called in, and using the type command: type b:log,nnnnn whereç
+nnnnn is that number, to type the log since the last caller I saw.  Iç
+also review the killed file to make sure no one accidentally killedç
+someone else's message.
+
+-  As the LOG and KILLED files get quite large (say over 20K) you mightç
+want to rename them (from CP/M - currently rename is not supported inç
+CBBS) so reviewing them won't take as long.  We use "Lyymmdd" andç
+"Kyymmdd".  You might even just want to erase them.
+
+- Decide upon a philosophy for maintaining the messages, both qualityç
+and quantity.  Use OR;* to review ALL message entered since your lastç
+call.
+  The NEXT file puts a "ceiling" on the actual number of activeç
+messages.  The # command shows the number of active messages.  Thisç
+should always be sufficiently below the physical ceiling so that forç
+example, if you forget to call in for a couple days, you won't beç
+greeted by LOG entries "what?  No room for more messages?" as I wasç
+recently.  
+  If you start numbering your messages at 100, you can always "q;100" toç
+obtain a list of the oldest messages.  Lets say you decide you have roomç
+for 300 messages, and there are now 290 active.  You probably want to goç
+back to 275 active, to leave lots of room.  Do q;100 and note theç
+message numbers of the oldest 15 messages.  Then issue K commands (inç
+operator mode so you won't be bothered for passwords) for each of them. ç
+You can stack them: k;nnnn;k;nnnn;k;nnnn...
+  When they have been killed, issue the PURGE command to clean up theç
+summary file.
+
+- Review the LOG file to see if there are any questions that needç
+answering, to find the list of messages that people were unable to killç
+(either because they forgot the password, don't know it, or forgot toç
+leave the message unprotected), and to see if any appropriate (H)elpç
+keywords were entered.
+
+- Make changes to the NEWS file if there's something new you want to letç
+people know about.  After the 6-8 line heading, place the news item -ç
+first the headline with ] then the date, then starting on a separateç
+line, the details.
+
+- If you make changes to the HELP file, run XHELP.COM to re-build theç
+HELP.IDX index file into the HELP file.  It makes searching for a givenç
+keyword much faster than if there were no IDX file.
+
+- the NEXT file: In addition to the next message number, caller number,ç
+number of active messages, and max # of messages, it can containç
+"flashes", i.e. messages for certain (or all) people, (messages whichç
+cannot be ^C or ^K skipped), and "TWIT checks".  The latter allowsç
+restricting certain users (no E or K, and only 3 lines of comments atç
+G), or allows immediately hanging up on them.  See "file formatç
+documentation" below for details.
+
+- The PASSWORD file, if you are supporting file transfers, must containç
+the access information (password, disk, user, etc) for transfers.
+
+
+	################
+
+	4. FILE FORMAT DOCUMENTATION
+==================
+    BULLETIN & WELCOME: Nothing special here - the file is just TYPEd. ç
+However, when C or ^C is pressed, it skips to the next "]" character inç
+the file, and resumes typing at that point.  Thus the welcome has a "]"ç
+before the description of control characters supported so a user can useç
+the W command, then ^C directly to the control character description.
+
+==================
+    NEWS consists of an 8-line heading, then for each news item, aç
+1-line headline, and as many detail lines as you wish.  Syntactically,ç
+the headline simply starts with the character "]".  When a user runsç
+NEWS, the H (headline) option will type any line starting with "]".  
+  The detail lines are simple text lines between headlines.
+
+==================
+    ENTINTRO is a simple text file, typed at message entry time if theç
+user said they wanted help before entering a message.
+
+==================
+    FUNCTION documents the main functions of the system.  It used to beç
+hard-coded in CBBS, but making it a file allows you to customize itsç
+"look".
+
+==================
+    MESSAGE.Xnn contains the messages themselves.  The nn is computed byç
+taking the last two digits of the message number, dividing it byç
+"FILEDIV" (the equate in CBBS.ASM), taking the integer result, andç
+multiplying it by FILEDIV again, taking the resulting number and paddingç
+it with "0" on the left if it is 1 digit.  This number is then "nn". ç
+Example:  What file will message 00347 be written to?  47/FILEDIV = 47/2ç
+= 23.5, or 23 as an integer.  Multiply by FILEDIV gives 46, so messageç
+00347 will be written to file MESSAGE.X46.  
+   Another way of saying this, for the common case of FILEDIV=2, is thatç
+you round down the last 2 digits of a msg # to an even number, and thatç
+will be the message file.  Using the above example: 47 rounds down to anç
+even number 46.  Message 344 will be in file MESSAGE.X44.
+  Messages in a message file have a 2-line header, then the text of theç
+message itself.  See the SUMMARY file for the format of the two headerç
+lines.
+
+==================
+    SUMMARY contains 2-lines for every message in the system.  Theç
+format is:
+
+^G	literal ascii bell, 07H
+nnnnn	The 5-digit message number, with leading 0-s.
+,	a literal comma following the message number
+nn	2-digit number of lines in the message.  If you manually edit up
+	a message > 99 lines, use 99, since this is a 2-digit field.
+	Note, if the message has been Killed, but the summary file not
+	PURGEd, then the first digit of the message number has been
+	changed to an X.  RESTORE.COM, to restore a message, changes the
+	X back to the appropriate digit in the process of restoring the
+	message.  If PURGE had already been run, RESTORE says so, and
+	you'll have to use BUILDSUM to rebuild the summary from the
+	message files.
+,	Literal comma
+mm/dd/yy creation date of the message
+,	Literal comma
+from	Who the message is from, up to 20 characters.
+,	Literal comma
+to	Who the message is to, up to 20 characters.
+(crlf)	Ascii 0D 0A ending the first line of the summary.
+subj	message subject, up to 30 characters.
+,	Literal comma
+pass	4-char message password - needed to kill the message
+	or NONE if only operator killable, or if no password, this
+	field is OMITTED (not spaces) i.e. crlf follows comma.
+crlf	Ascii 0D 0A ending the 2nd line of the summary.
+
+Here is an example: (I've changed the 07H to "^" then "G"):
+
+^G00001,80,10/03/82,WARD CHRISTENSEN,ALL
+CPMUG HISTORY,NONE
+
+NOTE all the information in the summary MUST BE in UPPER CASE.
+
+==================
+    PASSWORD contains the password for getting into operator mode.  Thatç
+is any upper case ASCII character string (not containing ";") andç
+terminated with
+CR/LF.
+    Following that are optional lines to allow access for fileç
+transfers.  Each of these lines takes the form:
+	[fn,ln,pw,dr,u,r,msg]
+where	fn is the callers upper case first name, (* allowed)
+	ln is the callers upper case last name, (* allowed)
+	pw is the callers upper case password
+	dr is the one drive (ex: A or A:, B or B:) the user may access
+	u  is the maximum user the user may access; OR a lo-hi range ofç
+users such as 0-8, 3-4, or 3-3 to limit the caller to a single user.
+	R  is N for R/W access to the file, or R for read/only access
+The PASSWORD file may contain any number of names.  CBBS tries each inç
+succession.  Thus typically the last entry is something like:
+	[*,*,CPMUG,B,0,N,]
+Thus *,* matches any name, CPMUG is the password required, B isç
+accessed, user 0 is the max user, read/write permitted, and no specialç
+message is printed.
+
+The char * may be used in the name like in CP/M filenames, i.e. you canç
+save spelling out a long name by saying [WARD,CHRIS*,... for example.
+
+==================
+    FIRSTIME, ENTRHELP, MODMHELP, SCANHELP and HELP2 are all "help"ç
+files, and have the following format:
+    A line beginning with "[" will be typed as a question.  CBBS appendsç
+the question mark.  The user may reply Y, N, or Q to quit.
+    If Y is typed, the following text in the file is typed, up to aç
+closing "]" character.
+    If N is answered, text up to the next "]" is skipped.  Nestedç
+questions are handled, i.e. if a line starting with "[" is encountered,ç
+CBBS skips it through its "]", then goes back to skipping to the "]" itç
+was originally skipping.
+    Lines without "[" or "]", and outside of a question body, are alwaysç
+typed.  Thus lines before the first question, between questions (after aç
+"[" but before the next question), and after the last questions closingç
+"]", are typed.
+
+==================
+    LOG contains a record for each caller.  The format is:
+mm/dd/yy,hh:mm:ss,ccccc,b,ffffffff lllllll,zzzzzzzzzz,e
+
+where ccccc is the caller number, b the baud rate (1, 3, 4, 6), fff..lllç
+the first and last name, zzzz the city (if "first time user" and enteredç
+a city), and eee is the elapsed time in minutes.
+
+If the user left comments, they are also written to the log, following aç
+"]" character, which allows the TYPE command to skip regular logons andç
+go to the next comment.
+
+Other things found in the LOG file:
+
+]K,nnnnn,firstname lastname
+	an unsuccessful attempt to kill msg nnnnn.
+]HELP: xxx
+	a (H)elp keyword xxx was entered, and is not in the HELP file.
+
+]S filename.typ
+	M command was used to send the file (successfully)
+
+]R filename.typ
+	M command was used to receive the file (successfully)
+
+]PASSWORD,firstname lastname
+	The indicated person used the PASS command but didn't know the
+	password.  If you find this very often, you may want to changeç
+the
+	literal string PASS in CBBSFUNC.ASM to something else, and mayç
+even
+	want to put PASS in the SYNONYM file as "PASS=G;N" to hang up on
+	anyone who attempts to use the PASS command.
+
+]CHAT: line of text,
+	User typed CHAT, but no operator was available so CBBS asked for
+	1-line of "why chat" info.
+
+==================
+    NEXT file looks like the following, where "<" means CR/LF:
+
+00566<	next message number to be assigned (start at 100 on new system)
+  322<	next caller number (start at "    1" on a new system)
+   85<	Number of active messages
+  300<	Maximum number of messages allowed.  After that cbbs says
+	"sorry no room for more msgs" to an E command.
+
+Each of these is 5 digits, terminated by a carriage return.  They MUSTç
+be exactly in the position as shown.  A single extra byte would screwç
+things up.
+    Following the max # of msgs allowed, is a free-format text areaç
+containing messages and actions for callers.  This is manuallyç
+maintained, with the exception that anyone attempting to kill a messageç
+number under 10 will automatically be written to this file as a twit,ç
+i.e. unable to further kill or enter any messages.
+    The format for each entry is:
+
+[firstname,lastname,message]action
+
+	[ is a literal square bracket.
+
+	firstname is upper case, and may end in or consist solely of *.
+
+	lastname is upper case, and may end in or consist solely of *.
+
+	message is any ASCII text not containing "]".  It may be more 
+		than one line and may include blank lines.
+
+	action is:
+		*	TWIT this caller - no E or K allowed
+			and only 1-line "G" comments.
+		/	Hang up on this twit - immediately
+		+	Go on with the name search after typing the msg.
+
+    Here is an example of a NEXT file after the required numbers at theç
+beginning:
+
+[*,*,>> FLASH <<
+New version online - see NEWS]+
+[TOM,HOOSER,Tom, call me tonight (and remind me to kill this flash)]
+[DONALD,DUCK,]/
+	.
+	.
+	.
+Everyone got the >> FLASH << and because of the "+" after its "]",ç
+scanning continues - Tom Hooser would get the message, and if Donaldç
+Duck called in, CBBS would hang up on him.
+
+==================
+    HELP file consists of keywords and their explanations.  REMINDER:ç
+XHELP.COM MUST be run to produce a new HELP.IDX after editing HELP.
+
+In HELP, each keyword line is of the form:
+
+	[keyword=short description
+
+[ is a literal "[",
+keyword must be in UPPER CASE
+"short description" is up to one line
+    There may be multiple keyword lines for a given text description. ç
+You must have the "=", but need not include the one-line description forç
+the synonyms.
+    The text for the keyword(s) follow starting on a new line.  The textç
+continues for how ever many lines it requires, and is terminated with aç
+"]" character.  Typically, the "]" is backed right up to the nextç
+question, so the file looks like:
+
+[keyword=description
+[alternate keyword=its description
+	 .
+	text
+	 .
+][keyword2=description
+
+etc.
+
+You need not include a description for obvious synonyms, but you MUSTç
+include the = sign.
+
+
+==================
+    HELP.IDX simply contains the keywords from HELP file, and the ASCIIç
+HEX sector number the keyword is found in.  It is built by the XHELPç
+command, which MUST be executed every time editing the HELP file wouldç
+change the sector that any keyword lies in.  By this I mean if you editç
+it and merely correct a misspelling, XHELP need not be run since theç
+relative position of the keywords in the file has not changed.
+    NOTE if HELP.IDX is not found on disk, a sequential scan of the HELPç
+file is made, and is unbearably slow.
+
+
+==================
+    USERS:  The user file has 511, 1023, or 2047 entries for users (setç
+by ULEXM equate in CBBS.ASM)
+
+Each entry is EXACTLY 64 bytes long (62 + cr + lf) and looks like:
+
+         1         2         3         4         5         6
+12345678901234567890123456789012345678901234567890123456789012
+  nnn, ,firstname lastname   ,     ,mm/dd/yy,hh:mm,mmmmm,0000G
+
+"  nnn" is the caller number at the time of the call.  It is used toç
+determine the oldest caller (in a block of 20) to overlay when a callerç
+can't be found.
+
+firstname lastname is self explanatory.  (note NO COMMA between)
+
+mm/dd/yy,hh:mm,mmmmm is the date, time, and high message number at theç
+time of the callers LAST call.
+
+"0000" is an unused field.  I put the 4-digit record number in thisç
+area.  Useful for example if you use the TYPE command to find someone inç
+the USERS file (type b:users,ward christensen) because it will tell youç
+where in the file they are.  If you want to see the caller number (theç
+field before the name, so it didn't print), you could TYPE the user fileç
+specifying the RECORD number one less than that seen by the first typeç
+command. (If that happens to match a caller or message number, hitç
+return to continue the scan with the NEXT occurrence of the string).
+
+"G" is a flag byte, consisting of the following bits:
+
+ __80______40______20______10______08______04______02______01___
+|	|	|	|	|	|	|	|	|
+|   0	|   1	|   0 	| short	| expert| bell	| duplex|case	|
+|_______|_______|_______|_______|_______|_______|_______|_______|
+
+Thus the default is 
+	base value	 40
+	long		+00
+	not expert	+00
+	bell on		+04
+	duplex on 	+02
+	case mult	+01
+			----
+                         47h = ascii "G".
+
+The CBBS "U" command sets this flag byte based upon the settings at theç
+time U is issued.  When a new caller overlays a previous user, the flagç
+is reset to "G".  If you want the bell to default to off, make theç
+default (in CBBSSUB3.ASM) a 43H, or "C".
+
+	EDITING THE USER FILE:
+
+Like all CBBS files, the USER file is editable.  However, you must beç
+more careful in editing it than other files: its format is fixed withç
+each user record 1/2 sector long (i.e. 64 bytes), and may not overlapç
+sector boundaries.  It is more of a RANDOM file than a SEQUENTIAL one. ç
+If you want to zap someone out of the file (such as a misspelled name orç
+a name a twit signed in under), then change any numeric digits in theç
+leading 5 characters to 0.  DO NOT blank it out entirely, because thenç
+if someone calls in who would randomize BEFORE this slot, but be foundç
+AFTER IT, they would stop upon encountering the empty slot and not findç
+their previous logon.  (Not "SUPER" serious: it would just lose the oneç
+call - eventually their older record would be overlaid)
+
+If you don't want some "twit" to have his call remembered for next time,ç
+also zap the name (i.e. change 1 letter, etc).  Also "official twits"ç
+(the ones with their name in the NEXT file followed by * or /) won't beç
+recorded in the user file.  You could also bug them by simply placing aç
+password in that field.  Since passwords hash to random letters from @ç
+to P or so, an X would be impossible to guess.
+
+See CBBSINST.DOC for additional information.
+                                                                                                                        

@@ -1,0 +1,47 @@
+Welcome updated 09/27/83; CBBS(R)/Chicago (312) 545-8086
+     Terminal need nulls?  Type "control-N" while this types:
+----> Tired of seeing welcome?  Press "C" to skip through it.
+You can press K to skip the Welcome!! (Reprint Welcome later with W command)
+
+** WELCOME TO WARD AND RANDY'S
+** COMPUTERIZED BULLETIN BOARD SYSTEM (R) (C.B.B.S. (R))
+** (In operation since 2/16/78)
+
+----> Press "S" to stop output, "S" to start it again <----
+ (no data will be lost)
+
+CONTROL CHARACTERS ACCEPTED BY CBBS:
+]
+ASCII    CTL
+CHARS   CHARS
+-----   -----  While keying:
+       DEL/BS CHARACTER DELETE
+ ESC	^U    LINE DELETE
+	^I    Tab (Tabs set every 8)
+	^R    Retype input line
+	^W    Video Word backspace
+	^X    Video line delete
+
+	      WHILE CBBS TYPES:
+  C	^C    CANCEL OUTPUT
+  K	^K    FUNCTION ABORT
+  S	^S    STOP/START OUTPUT
+	^N    Send 5 more nulls
+
+Whenever we refer to "C/R", we mean your "return" key!!
+
+If you get stuck, try:  Ctl-K then C/R
+  until you bail out back to the main menu.
+
+FRILLS:
+  CTL-L shows length of input field
+  CTL-E types a C/R back to you, but doesn't end the line you are keying
+
+]Use ";" to separate multiple answers, i.e.
+ n;firstname;lastname;x;p;
+would log you in, set video mode, expert mode, no prompt bells.
+
+----END OF WELCOME----
+DY'S
+** COMPUTERIZED BULLETIN BOARD SYSTEM (R) (C.B.B.S. (R))
+** (In operation since 2/16/78

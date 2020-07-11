@@ -1,0 +1,887 @@
+Ward and Randy's Computerized Bulletin Board System (R)
+
+CBBS(R) INSTALL.DOC 
+	as of 10/01/83 14:00:43
+
+Problems?  Leave a message on our CBBS/Chicago (312) 545-8086 (110, 300,ç
+600, 1200 baud), or Ward's CBBS/CPMUG (312) 849-1132 (110, 300, 450,ç
+600, soon going 300-600-1200).  Both use standard CBBS with multipleç
+C/R's for speed detect.  Alternately, call Ward Christensen at (312)ç
+849-6279, or Randy Suess at (312) 545-7535.
+
+NOTE: instead of the earlier kludge of .DOC files shipped with CBBS,ç
+there is now only CBBSINST.DOC and CBBSOPER.DOC, and a brief FILESx.DOCç
+on each disk.  These were new with release 3.6.  Please let us know ofç
+any problems or suggestions with this documentation.  Thanks.
+
+SQUEEZED FILES: Since the CBBS ASM files outgrew a single 8" CP/M diskç
+as of release 3.6.2, we had to go to squeezed files.  Several utilitiesç
+have been added.  Details below.
+
+
+[[ There is a history of changes at end of this document ]]
+
+	CONTENTS:
+
+Installing and maintaining CBBS.
+
+1. System requirements
+2. Customizing the BIOS
+3. Customizing and assembling CBBS.
+4. Setting up CBBS files
+5. Testing CBBS
+6. Things to watch for
+
+	################
+
+1. APPROXIMATE SYSTEM REQUIREMENTS:
+
+- 2 8" disks (1 double density (600K) 8" would be adequate).
+
+- 48K RAM (Not sure what the actual minimum would be.)
+
+- Modem: S-100 modem (e.g. PMMI) makes things easiest, because it isç
+easy to go off hook, detect carrier, etc.  With 1200 baud modemsç
+catching on, many will go with that, as have we.  See section 6 if youç
+don't have a PMMI.
+
+- Local I/O: a local CRT makes "observing" the system easier, and allowsç
+use of the CHAT command for a caller to request to talk to the operatorç
+via keyboard.
+
+- Sense switches: CBBS uses a sense switch to determine if you are inç
+local or remote mode.  Local mode allows you to user your computerç
+normally, to run CBBS locally, etc.  If in remote mode, the modem isç
+looked at in addition to the local console.  We have never tried toç
+implement a CBBS on a system without sense switches.  Lacking a frontç
+panel, a DIP switch on a parallel input port does well.  Only a singleç
+bit is needed - to select if the system is in local or remote mode.  Inç
+remote mode, it looks for things like carrier, etc.  In local mode, itç
+acts like any normal CP/M system.
+
+- Booting: You may run CBBS either as resident between calls, waitingç
+for the ring (a technique named "REINIT" after its EQUate in CBBS.ASM)ç
+or as a transient COM file, via hardware circuitry which boots CP/M whenç
+the phone rings.  In this case the CP/M autoload facility (placing a COMç
+file name in the buffer at CCP+8) loads CBBS.
+
+- CP/M 2.x  - NOT  3.x (CP/M Plus).  One person has tested CBBS on CP/Mç
+3.0, and it didn't work.  We don't yet know why.  Other than the STATç
+routine which looks at the drive allocation vectors, there "shouldn'tç
+be" any reason why not.  Versions prior to CBBS 3.6 would operate withç
+CP/M 1.4.  CBBS 3.6 makes use of the USER command.  It could be NOPed,ç
+and file transfer could NOP the SET USER calls if necessary.
+
+	################
+
+2. CUSTOMIZING THE BIOS
+
+CBBS expects to send and receive characters THROUGH THE BIOS.  Thisç
+means it behaves the same whether being tested locally with no modem, orç
+being run from a modem - IF the modem I/O is IN THE BIOS.
+
+A skeletal console BIOS, BIOSCON.ASM is supplied.  It demonstrates howç
+to combine modem I/O with your current console I/O, using a parallelç
+input port (sense switch) to determine if modem I/O is to be handled, orç
+only local.  
+
+Note that the initial connection, speed detect, etc. is handled whenç
+CBBS connects to the caller.  Similarly, it is CBBS that disconnects.
+
+This makes it somewhat unsuitable to run CBBS under BYE, a program whichç
+patches into high memory to allow modem I/O through the BIOS.  
+
+The main requirement of the BIOS is that:
+** 1.	The modem I/O is in parallel with the local I/O.  This means anyç
+character sent to console out goes to both the modem and the localç
+console, and console input will get a char from either the modem or theç
+local console, i.e. looks continuously at both.
+** 2.	Console-status and console-in return 0FFH if carrier is lost. ç
+This prevents hanging in "conin" if carrier is lost.  NOTE this is not aç
+del (7FH) which the user could key.
+
+CP/M USER NUMBERS: If you want to run CBBS "out of the way" such as inç
+user 15 (that's how I do it in CBBS/CPMUG), have the BIOS select theç
+drive and user as it JMPS to CCP to load CBBS.  This is done by settingç
+the C register to udH i.e. the user # is the high order hex digit, andç
+the disk to log in is the low order digit.  For example, "mvi c,0f1h"ç
+would set up for user 15, drive a:.  On a warm boot, you may want to goç
+to user 0, so if due to software or hardware errors someoneç
+inadvertently drops into CP/M, they will be in user 0 with CBBS and itsç
+files up unaccessible in user 15.  You should rename the normal CP/Mç
+command for USER (patch it in the memory image produced by SYSGEN, or ifç
+you are comfortable with a disk patch utility such as my DU.COM, use itç
+to change the name.).  You may want to have a byte somewhere in theç
+BIOS, that contains the user and disk, so you can readily set it to 15ç
+or 0 depending upon where you come from.  For example you might want toç
+test a sense switch for a "remote" setting, etc. then just before theç
+JMP to CCP (or CCP+3 to not auto-load CBBS) "lda dkuser" then "mov c,a".
+
+
+	################
+
+3. CUSTOMIZING CBBS.
+ _
+|_| Back up the disks.
+ _
+|_| Unsqueeze the ASM files.  USQ command format consists of USQ, theç
+destination drive (if not the same as the logged in drive) then one orç
+more files to unsqueeze.  Ex: 
+	USQ B: A:CBBS.AQM A:CBBSMAIN.AQM.
+Alternatively if you have over 250K (or so, the amount typicallyç
+increases from release to release) you could unsqueeze them all via: 
+	USQ B: A:CBBS*.AQM
+This will unsqueeae all ASM files making up CBBS, from drive A: to driveç
+B:.
+
+ _
+|_| Print all CBBS ASM files and review them to gain insight into howç
+CBBS works, etc.  At a minimum for customization, print CBBS.ASM.
+
+Unlike previous releases, as of release 3.6 we have attempted toç
+consolidate most of the customization into one piece of assembly code,ç
+namely CBBS.ASM.
+ _
+|_| EDIT CBBS.ASM - Here are the appropriate changes to make:
+
+Leave the VERS, MODIF, and LEV EQUates alone - they reflect the version,ç
+modification, and level of CBBS that you have.  You may wish to changeç
+the "hack" equate to ' '.
+
+==>	FAST	EQU	FALSE		;running cbbs under "fast"?
+was used under CP/M 1.4 when Bob Van Valzah's disk buffering routine,ç
+"FAST", was usable to make CBBS run faster. Now obsolete.
+
+==>	CCOUNT	EQU	40   	;max comment lines/call
+==>	ECOUNT	EQU	10   	;max msgs entered/call
+==>	maxl	equ	20   	;max lines in a message
+Leave these alone for the initial customization.  Later you may changeç
+them if you want to.
+
+==>	notify	equ	true 	;notify from "next" file?
+This simply means if you put someones name in the NEXT file, it willç
+scan for it.  See CBBSOPER.DOC for more information.
+
+==>	chat	equ	true 	;want operator chat mode?
+If you don't want users to be able to type CHAT and thus ring yourç
+terminal bell asking to talk, make this false.
+
+==>	KBUFPG	EQU	08		;8 PAGE, 2K FOR KILLING	
+This is the # of pages used as a file buffer when killing messages.
+
+==>	FILEDIV	EQU	2		;50 MSG FILES IN CBBS/CHICAGO
+				;	(and most others)
+If you can afford 50 message files, leave this as is.  Only if you areç
+trying to keep a very small CBBS, might you want to set FILEDIV to someç
+smaller number.  100/filediv is the # of msg files that will be used.
+
+==>	EJECT	EQU	FALSE		;EJECT TTY EVERY 60 LINES?
+Set this TRUE only if you MUST have your TTY eject over a perf.
+
+==>	TWITCK	EQU	TRUE		;ABORT IF INVALID USER NAME
+Leave this true - allows you to "zap" certain users who give youç
+trouble.
+
+==>	B450600	EQU	TRUE 		;450, 600 BAUD (PMMI, IDS ONLY)
+Leave true if you have a PMMI or IDS, as it allows the A command toç
+alter baud rate to the higher rates.
+
+==>	TTYLCT	EQU	042H
+If you said EJECT is true, then this area of memory will be used as aç
+continuously running TTY line count.  Pick an address in high memory ifç
+42H is not suitable for you.  
+
+==>	y1	db	'8'	;define current..
+==>	y2	db	'3'	;..year printed
+If your clock board doesn't maintain a year, then y1 and y2 are used byç
+the message entry routine to pick up the date.  Patch or reassemble CBBSç
+as 12/31/xx rolls around to 01/01/xx if necessary.
+
+==>	cbbschi	equ	false	;cbbs/chicago things.
+==>	wards	equ	false 	;Ward's CPMUG system?
+==>	randys	equ	false	;Randy's system for Morrows
+==>	cust	equ	true 	;users custom system
+==>	test	equ	false	;test version for non-modem
+Set TEST to TRUE for testing - it will bypass the modem code in theç
+signon, hanging up the modem at end of call, TTY and CLOCK routines, andç
+causes a JMP 0 when done, returning you to CP/M.
+
+The above 5 equates are shown as they should be set when assembling YOURç
+final version of CBBS.
+
+##### Now go down to the "if cust" part of CBBS.ASM and customize theç
+equates, messages, and routines there.
+
+==>	UKILL	EQU	1		;TRUE, USER CAN KILL OWN MSGS
+Leave this true.
+
+==>	mhz	equ	4		;4mhz system?
+Set this if you have other than a 4MHz system (i.e. 2, 5, 6, ?)  Itç
+controls some timing delays.
+
+==>	ulog	equ	true 		;want user logging?
+We presume you want to keep track of each users last call, so settingç
+ULOG true will support this (But will require more disk space (at leastç
+32K) for a USERS file).
+
+==>	ulexm	equ	1		;# names: 1:512 3:1024 7:2048
+User Logging EXtent Mast: 1 should do for most systems.  Very activeç
+systems may want 1024 names in the user file, and should select 3.
+
+==>	upass	equ	false		;user passwords?
+Set UPASS to TRUE if you want to maintain passwords for each user.  Thisç
+will mean more overhead editing the USERS file if someone forgets theirç
+password, etc.   NOTE that a password is asked for only if UPASSN (theç
+next equate in this doc) is true.
+
+==>	upassn	equ	false		;new user, password wanted?
+If this is false, new users will not be asked for a password, nor willç
+the U command ask if they want to change it.  ===>> ONLY someone knowingç
+this: that typing "u;Y" (the Y must be cap) will be able to enter/updateç
+their password.  This is primarily used by the operator to maintain aç
+password so no one may log on falsely under their name.  (UPASS must beç
+TRUE, UPASSN FALSE)
+
+==>	xfer	equ	false		;xfer not released yet
+If you want to support the M command and file transfer, make this TRUE.
+
+==>	msgapp	equ	false		;must msgs be approved
+This is undergoing development, NOT IMPLEMENTED.  The idea is that theç
+operator must "approve" messages before they may be seen.  May beç
+implemented in future releases of CBBS.  LEAVE IT FALSE FOR NOW!
+
+==>	minfnc	equ	true		;is "M" cmd in fnc menu?
+If you want "M" to appear in the "Function: (B,C,D..." menu, then setç
+this true.  Otherwise set it false.  NOTE that if you want M in theç
+function menu, you might also want to place it in the file FUNCTIONç
+which gives more detailed documentation - it's typed when the userç
+replies ? when asked for a function.
+
+==>	reinit	equ	true 		;re-init: cbbs stays in mem
+Leave this true if you want CBBS to remain in memory, looking for theç
+next phone call.  If you are going to have CBBS automatically loaded onç
+each call, such as through a hardware kludge board, set REINIT false. ç
+CBBSSUB2 contains a "JMP 0" which is what happens if you say "reinit equç
+false".  You might want to simply HLT, or as we used to do, JMP to a hi≠
+memory PROM allowing memory tests, etc.  If you want to run CBBS as partç
+of a remote CP/M system, and have CBBS running up in user 15, you mayç
+want to change the (G)ood bye command to just JMP 0 withoutç
+disconnecting the modem.  Your BIOS should then warm boot to user 0,ç
+either always, or upon detecting that user 15 was in control.
+
+==>	diskmsg	set	'A'-'@'
+==>	diskro	set	'B'-'@'
+==>	disklk	set	'B'-'@'
+These 3 equates select which disks (drives) contain the various CBBSç
+files.  To specify "logged in disk", use '@', i.e. '@'-'@'.  Forç
+testing, make all of them '@'-'@', if that is practical.  This is theç
+case if you said TEST EQU TRUE.  These are used as follows:
+
+DISKMSG is for the MESSAGES, SUMMARY, and NEXT (next caller #, msg #,ç
+files, etc).  DISKRO is the Read/Only disk containing HELP files, etc. ç
+DISKLK is the disk to contain the KILLED and LOG files, the USERS file,ç
+and any NOTES file for messages between operators.  CBBS.COM must ofç
+course be on SOME disk, typically the A: disk.  Here are the file sizesç
+to help you map out your system.
+
+BULLETIN	 2K**	Typed after the welcome.
+ENTRHELP	 5K	Detailed help on message entry subcommands.
+ENTINTRO	 1K	Intro to entering msgs
+FIRSTIME	 3K**	First time caller help before signing on.
+FUNCTION	 1K	Brief function menu (? command)
+HELP		36K**	Main keyword help file.
+HELP.IDX	 2K	Index into above.
+HELP2		 7K**	New user "HELP" command
+MODMHELP	 4K	Help with file transfers
+NEWS		11K**	What's new functionally with CBBS.
+PASSWORD	 1K**	Operator & file xfer passwords.
+SCANHELP	 3K	Help scanning msgs (O, Q, S command)
+WELCOME		 2K**	First thing typed at signon.
+		----
+                78K		on DISKRO
+** = files that may change size as you customize them.
+
+
+LOG		20K		-- Approx sizes - based upon how often
+KILLED		30K		  / you clean off these files.
+NOTES		 2K		/   Minimum is 0, max is "full disk"
+USERS		32K		32, 64, or 128K depending upon # slots.
+		----
+                84K		on DISKLK
+
+CBBS.COM	 23K		(may be anywhere)
+MESSAGE.Xxx	200K for 350 msgs (on DISKMSG)
+SUMMARY		 23K for 350 msgs (on DISKMSG)
+NEXT		  1K		 (on DISKMSG)
+		----
+                247K
+To work backwards from the size of a disk to see how many msgs you canç
+hold, compute #msgs=(disk size - 24)/750.  The 750 takes into account anç
+average message size (585) + 2 x the summary size.  Thus a 90K diskç
+could hold 90 msgs, a 240K disk about 300, and a 600K disk about 780ç
+(assuming no other files on the disk).  NOTE this average size was forç
+16 line 64 char msgs, and is probably closer to 1 K now that CBBS hasç
+gone to 20 lines of 80 characters for msgs.
+
+Always AT LEAST leave free space > summary file size on the MESSAGEç
+SUMMARY & NEXT disk, because the PURGE command creates a temporary fileç
+the size of the SUMMARY (This is why the 2 x summary size in the aboveç
+formula).  Killing a message also creates a temporary file the size ofç
+the particular message file involved.  In general, you would want 30K orç
+more free on the message disk.  If the free space falls below the sizeç
+of the summary file, you'll have to kill off some messages, or erase theç
+summary and run BUILDSUM.COM to recreate the summary from the messages. ç
+Use the NEXT file field "maximum active messages" to keep people fromç
+filling the disk, although it is best to always have room for moreç
+messages by keeping old msgs killed off.  (You don't want hostile usersç
+unable to leave a message because the system is full).
+
+The above are SINGLE DENSITY file size equivalents.  Round each up to 2Kç
+(or even 4K) depending upon your disk allocation.
+To REALLY cut down on space, have fewer than 50 message files, sinceç
+each wastes .5 times the CP/M allocation size (double density 2K meansç
+for ex. 50 files waste 25K).  Strip down the HELP and NEWS files.  Anç
+example: a 3-disk RCPM which uses CBBS for its message system uses aç
+file divisor of 5, i.e. so there are 20=100/5 message files.
+
+==>	tty	equ	false 		;is there a log tty?
+Leave this false unless you want a logging printer.  NOTE that evenç
+without a logging printer, it might be nice to leave this TRUE, andç
+simply dummy up the TTYSTAT and TTYOUT routines.  Why?  Because CBBSç
+uses a 256-byte wrap-around buffer to keep track of every keystrokeç
+someone typed in, and its sometimes interesting to dump memory at thisç
+address (about 6300H) to see the last 256 keystrokes typed.
+
+==>	ttylr	equ	false		;is tty status low ready?
+no longer used, since the TTY output code is right in CBBS.ASM and notç
+buried elsewhere.
+
+==>	ttyst	equ	2		;status bit (jz wait loop)
+==>	ttysp	equ	4		;tty status port	
+==>	ttydp	equ	5		;tty data port		
+These are used only in "ttystat" and "ttyout below, so may be omitted ifç
+you don't use them there.
+
+==>	ttystat	IN	TTYSP
+==>		ANI	TTYST
+==>		ret			;zero if not ready
+==>	;
+==>	ttyout	out	ttydp	;output it	added label 1/3/82
+==>		ret
+If you said TTY EQU TRUE, and thus want a logging printer, TTYSTAT testsç
+if the printer is ready to output, returning like the comment says: ZEROç
+if not ready.  Put a CMA instruction after the IN TTYSP if your port isç
+not "zero if not ready".  TTYOUT outputs the char in (a) to the TTY. ç
+TTYSTAT will have been called so there is no need to check.  TTY loggingç
+is asynchronous from modem output, and only logs the date, time, andç
+characters keyed by the caller, with "/" substituted for hard c/r'sç
+unless > column 60 on printer.
+
+==>	hayes	equ	false		;have hayes modem?	<<
+==>	ids	equ	false		;have  ids  modem?	<<
+==>	pmmi	equ	true 		;have pmmi  modem?	<<
+==>	sermodm	equ	false		;have serial modem?	<<
+Pick which of the modems you have - Hayes, IDS, PMMI, or a serial modem. ç
+Customize the appropriate routine: CBBSHAYS, CBBSIDS, CBBSPMMI, ORç
+CBBSMODM.ASM.  (If you do not have a PMMI, see section 6 below).  If youç
+have a Hayes Smartmodem, set SERMODM true, and rename CBBSSMOD toç
+CBBSMODM, and customize it for your serial I/O board.
+
+==>	pmmib	equ	0c0h		;PMMI base address
+change this if you have a PMMI but its not at 0C0H.
+
+==>	bymsg2	db	'From  Xxxxx:  Thanks for calling, ',0
+==>		put your names in xxxxx above <<<<<
+When a caller signs off (G command), the above message is printed.  Oursç
+says "from Ward and Randy".  Yours might say your name, a club name,ç
+store name, etc - the "sponsor" of the CBBS.
+
+==>	phoneop	db	put your operator name/phone numbers here
+==>	;			terminated by:  
+==>		db	cr,lf,0
+When an error occurs in CBBS (a critical file not found, unable to closeç
+a file, etc) the message at label "phoneop" is printed, through theç
+terminating binary 0.  See example in "CBBSCHI" of CBBS.ASM.
+
+==>	motctl	equ	false		;want drive motor on/off ctl?
+==>	motoron	equ	$		;drive motor on code
+==>	;	...
+==>	motorof			;drive motor off code
+==>		...
+==>		ret
+Do you want CBBS to turn off the drive motors after a call?  If so, setç
+MOTCTL true, and write a routine at motoron and motorof which will turnç
+your drive motors on, and off, respectively.  Note that after a call,ç
+motorof is called only after about a 5-second delay, giving "sector holeç
+counting" head lift routines time to life the head before stopping theç
+motor spinning.
+
+==>	; sense switch read, return non-zero if remote mode
+==>	ssw	equ	0??h		;sense switch port
+==>	remote	equ	80h		;ssw on for remote
+==>	rdssw	mvi	a,remote	;fake up sense switch
+==>		ora	a		;	since system has none:
+==>		ret			;	always remote mode.
+CBBS tests a sense switch to determine for example, if it is to call theç
+CONNECT routine in the modem code to check for a call, determine theç
+speed, etc.  SSW is not used anywhere.  REMOTE is used after CALL RDSSW,ç
+which should input your sense switches.  If you have sense switches, useç
+the one designated in REMOTE EQU as "on = remote".  If you have no senseç
+switches, and thus run purely remote, the above MVI kludge will do.
+
+==>	CLOCKC	EQU	FALSE	;COMPU-TIME CLOCK? (FILE CBBSCLKC.ASM)
+==>	CLOCKS	EQU	TRUE 	;SCITRONICS CLOCK? (FILE CBBSCLKS.ASM)
+==>	clockh	equ	false	;Hayes Cronograph? (file cbbsclkh.asm)
+
+One of the above should be true if you have a clock board of theç
+specified type.  Note this is the OLD compu-time.  If you have someç
+other clock board, leave CBBSCLKS true, and customize CBBSCLKS.ASM toç
+provide the following hardware dependent entry points.  All otherç
+routines use RDTIME and RDDATE as subroutines.
+	RDTIME reads the time "mm/dd/yy" into where HL points;
+	RDDATE reads the time "hh:mm:ss" into where HL points.
+In both cases, HL must point 2 past the string, i.e. the routine willç
+likely leave "mm/dd/yy/" in the buffer (because the "read 2 digits"ç
+routine stores a delimiter ("/" or ":") after reading 2 digits).  Thusç
+the routine that calls RDTIME or RDDATE can "DCX H" "MVI M,0DH", toç
+terminate the string (see routine WRTIME for example).
+
+The subroutines clkdig2, clkdig, clkinit, and clkcont are the hardwareç
+dependent routines that may be deleted.  All other routines - such asç
+one to print elapsed time (PRETIME) use RDTIME and RDDATE indirectly.
+
+YOU SHOULD HAVE A CLOCK BOARD!!  If you don't then:
+ 1. Upon message entry, callers will be asked for date;
+ 2. CBBS will remember callers high message number for their next call,ç
+but not date and time.
+ 3. The T command to print date, time, elapsed time, will beç
+unavailable.
+ 4. The LOG will not contain the callers date/time/E.T.
+ 5. The hard-copy log won't have the call's time/date.
+
+We recommend the Scitronics S-100 clock board - it has worked well forç
+us for years.  Other clocks such as the CompuTime should work OK nowç
+that it used the microcomputer clock ICs rather than a kludge of a clockç
+chip like before.  Other CBBS operators have installed the Mountainç
+Hardware clock, and we can supply a skeletal time and date readingç
+program for you, that would take quite a bit of work to integrate intoç
+CBBS.  As of 10/01/83 I have written to see if they have made a trueç
+CBBS clock routine of it yet.
+
+	----------------
+
+Assembling CBBS:
+
+After unsqueezing and editing, assemble CBBS using the LINKASM.COMç
+supplied.  It automatically follows the LINK pseudo-ops as coded at theç
+end of each .ASM file.  The command format is like ASM, except a secondç
+operand, the disk to write a .SYM file to, may be specified.  The SYMç
+file is for use with Digital Researches excellent SID (Symbolicç
+Instruction Debugger).  The format is:
+
+	linkasm cbbs.<source disk><hex disk><prn disk> <sym disk>:
+Like ASM, Z is used for hex or prn if no file is wanted, and X may beç
+used for prn if the listing is to come to the console.
+
+For example:
+
+	linkasm cbbs.baz c:
+
+assembles CBBS from B:, writes the .HEX to A:, tosses the .PRN, andç
+writes the .SYM to C:.  NOTE that ALL the ASM files MUST be on the SAMEç
+disk.  I hope to change that in the future to allow CBBS to be assembledç
+on a smaller system without having to resort to DCOMMENT to stripç
+comments.
+
+NOTE this assembler is totally compatible with CP/M ASM.COM.  Thus itç
+DOESN'T handle nested IF statements:
+
+	IF	PMMI
+	.
+	IF	TEST
+	.			<<< This doesn't work
+	ENDIF	;test
+	.
+	ENDIF	;pmmi
+
+THIS WILL NOT WORK and must be coded:
+
+	IF	PMMI
+	.
+	endif			;pmmi
+	IF	TEST and PMMI
+	.
+	ENDIF			;test and pmmi
+	IF	PMMI
+	.
+	ENDIF			;pmmi
+
+i.e. you must handle the nesting YOURSELF.
+
+The linking order for the CBBS .ASM files is:
+
+CBBS	.ASM		(i.e. CBBS.ASM ends in " LINK CBBSMAIN"
+CBBSMAIN.ASM
+CBBSFUNC.ASM
+CBBSBYE	.ASM
+CBBSSUMM.ASM
+CBBSENT1.ASM
+CBBSENT2.ASM
+CBBSRTRV.ASM
+CBBSOPER.ASM
+CBBSKILL.ASM
+CBBSDISK.ASM
+     |
+  IF CLOCKC---> CBBSCLKC.ASM----+	(COMPUTIME CLOCK)
+     |				|
+  IF CLOCKS---> CBBSCLKS.ASM--->|	(SCITRONICS CLOCK)
+     |				|
+  IF CLOCKH---> CBBSCLKH.ASM--->|	(Hayes serial clock)
+     |				|
+     |<-------------------------+
+     V
+CBBSSUB1.ASM
+CBBSSUB2.ASM
+CBBSSUB3.ASM
+     |
+  IF PMMI------>CBBSPMMI.ASM----+
+     |				|
+  IF HAYES----->CBBSHAYS.ASM--->|
+     |				|
+  IF IDS------->CBBSIDS.ASM---->|
+     |				|
+  IF SERMODM--->CBBSMODM.ASM--->|
+				|
+     +<-------------------------+
+     |
+CBBSWARD.ASM   (Not normally included - but is an example of how
+     |		you could take major additions to CBBS and put them
+     |		in YOUR own file, as I have done.  Be sure to LINK
+     |		to it from the appropriate MODEM file.
+     V
+CBBSWORK.ASM
+
+LINKASM.COM has been modified to properly handle lower case DB values,ç
+including after encountering a (').  Early versions of ASM translatedç
+everything to upper case, and an early patch for it would screw up ifç
+something like "can''t" was encountered.
+
+ASSEMBLY ERRORS:  Since CBBS is many files, LINKASM prints the name ofç
+each file linked to as it assembles.  This should help you find the fileç
+containing an error.  Also. FIND.COM is supplied, which allows scanningç
+ALL files for a particular label or equate.
+
+** FIND.COM USAGE:
+
+	find b:cbbs*.asm tty|if test|if_test|not test
+
+type FIND with no operands for explanation of its usage, such as thatç
+the "_" above is translated to a tab.
+
+** T.COM Usage:
+
+Another program is supplied for use in conjunction with FIND.COM.  It isç
+T.COM, a file typing program.  Type T with no operands for anç
+explanation.  Typically, you might use FIND and T as follows:
+
+Lets say you have an assembly error in CBBS, after making some changes,ç
+and the label involved in the problem is "SUMDNE1".  Type:
+	find b:cbbs*.asm sumdne1
+to find references to the label.  Lets say it reports back:
+
+----> FILE CBBSSUMM.ASM
+ 187    SUMDNE1 MOV     A,M
+
+Just use the T program to type that file starting there:
+	t b:cbbssumm.asm 187
+
+Alternatively, you could tell find to TYPE the file starting with theç
+line on which it matched:
+
+	find b:cbbs*.asm sumdne1!
+
+The "!" tells it to start typing ALL lines upon finding a match.  Useç
+the space bar to turn off the "type all lines" flag until the NEXTç
+occurrence of the string sumdne1 is found.
+
+OR (egad, rampant feature-itis) use T to find the label for you,ç
+providing you know what file it is in:
+
+	t b:cbbssumm.asm sumdne1
+
+NOTE that T is meant to work full screen, but is shipped with thatç
+feature defeated.  SID or DDT T.com (or use DU if you're comfortableç
+with it) and patch 104H to an 01 to enable screen clearing, and patchç
+your screen clear code as shown (at 109H as I recall) - its now ^Z orç
+1AH, which works for ADM3, ADM31, Televideo, and others.
+
+	----
+
+SQUEEZED FILES: If you don't have room on a single disk for all the CBBSç
+.ASM files, you'll have to do one of several things: 
+
+(1) borrow a system which is large enough to assemble CBBS, or 
+
+(2) strip the comments from the various CBBS .ASM files.  A program hasç
+been written and supplied to do this: DCOMMENT.COM.  The syntax for itsç
+use is:
+
+	dcomment output=input[,input...]
+
+i.e. dcomment a:cbbs.asm=b:cbbs.asm
+
+It can be used to combine files (its former name was COMBINE.COM, andç
+was the "hack" I used before inventing LINKASM).  If you combine files,ç
+you'll have to delete or comment out the LINK pseudo-ops at the end ofç
+any ASM file whose LINKed-to file has been combined with it.  Forç
+example, at the end of CBBSMAIN.ASM is
+	LINK	CBBSFUNC
+If you combined CBBS, CBBSMAIN, and CBBSFUNC into one module by typing:
+	dcomment a:cbbs.asm=b:cbbs.asm,b:cbbsmain.asm,b:cbbsfunc.asm
+then you'd have to delete the LINK CBBSMAIN and LINK CBBSFUNC from theç
+module.  You would LEAVE the LINK CBBSBYE that is at the end ofç
+CBBSFUNC, then combine into CBBSBYE.ASM on A: CBBSBYE.ASM and perhapsç
+others.  Sorry for the inconvenience of CBBS having grown in size.  Hopeç
+these tools help.  Eventually, I hope to make LINKASM assemble squeezedç
+files directly.
+
+	################
+
+4. SETTING UP CBBS FILES
+
+All files that are WRITTEN TO are dynamically created as necessary - theç
+message files, LOG and KILLED.
+
+You will probably want to start with some skeletal message files - seeç
+the supplied ones for examples.  For ex. message 1 might contain yourç
+own system history, etc.  See CBBSOPER.DOC for details on message fileç
+format and usage.
+
+**** GENERAL EDITING NOTE: most CBBS text files (HELP, HELP2, FIRSTIME,ç
+ENTRHELP, etc) are written with an editor (specifically, PMATE) thatç
+uses "soft" carriage returns.  Thus carriage returns which are in theç
+middle of a paragraph are stored as 8D hex, not 0D hex.  Since CBBS ANDSç
+incoming characters from a file with 7F, it does not effect CBBS usage. ç
+However, it simplifies the maintenance of these files since an editorç
+like WordStar or PMATE may be used, or any other that supports the 8Dç
+"soft" carriage returns.  This maintains the "nice" looking 72-wideç
+output from these files.  If your editor DOESN'T support these, such asç
+MINCE, you can PIP the files using the "[Z" option to (Z)ero the highç
+bit.  This will not hurt the files, but will make it so you have toç
+manually "pretty up" lines if they are too short or long after editing. 
+(such as with the MINCE ESC-Q command).
+
+If you ARE using WordStar, please turn justify and hyphenation off,ç
+since justified text just wastes time and disk space with all thoseç
+extra blanks, and the hyphens WS puts in the file (1Eh and 1Fh) are notç
+handled by CBBS.
+
+**** Edit FIRSTIME to make changes as appropriate for your system -ç
+purpose, hardware, etc.
+
+**** Edit NEWS to keep just the things you want to.  Count the # ofç
+lines in the file and put it at the top so people will know what they'reç
+getting into.  I consider NEWS to be an extension of the BULLETIN file,ç
+i.e. notes about new features, etc, that would overburden the caller ifç
+they were all in the BULLETIN.  You MAY want to start with a virtuallyç
+EMPTY NEWS file, or perhaps even use NEWS for an activity other thanç
+documenting CBBS things, i.e. it may be sort of a "club newsletter",ç
+etc.  Or you may eliminate the function and documentation on it byç
+removing it from the FUNCTION file, the command table in CBBSFUNC.ASM,ç
+the HELP file, etc.
+
+**** Unsqueeze the HELP file (usq b: a:help.qqq) - sorry there wasn'tç
+room on the disk for an unsqueezed version.  Then edit the HELP file toç
+put things unique to your system - hardware, operator(s) names, reasonç
+for setting up system, etc.  THIS IS A BIG JOB.  Perhaps make a hardç
+copy of it, and mark it up with the things you want to change.  Forç
+example, depending on whether file transfer is a part of your system,ç
+you'll want to change keyword "M" to reflect what you have.  Itç
+currently refers to pressing the "M" key to flag missed messages duringç
+a summary.
+  You may wish to delete the "history" part at the front of help - itç
+documents when changes were made in it for CBBS/Chicago.
+  I have attempted to put all "generic" help information at the front ofç
+the HELP file, and the system-specific stuff at the end following a lineç
+of pound signs (####..) which you could search for with your editor.  Ifç
+you are short on time or in a hurry to implement, edit HELP but lookç
+just at the things following ####>
+   On the other hand, if you are REALLY thorough, you'll want to lookç
+over EVERY keywords in the HELP file and ask yourself if (1) you wantç
+that keyword in the HELP file, and (2) if it says things the way you'dç
+like to.
+   You may want to add things to HELP.  For ex. CBBS/NW (Jim Willing &ç
+Bill Marx) put a list of other systems in under various keywords.  Youç
+might want to put keywords for local clubs, etc.  You might like to, forç
+example, have a list of Remote CP/M systems, by geographic area, or evenç
+area code.  Thus the keyword "RCPM-NE" would have systems in theç
+NorthEast, or "RCPM-312" would have systems in the Chicago area.
+   You'll note there is an entry near the front of the HELP file thatç
+looks like:
+
+][KEYWORDS=alphabetized list of keywords in this help facility
+#, #n, -, A, alter, and, B, backspace, baud, bell, boolean, bulletin, 
+
+and goes on for several lines.  If you have added or deleted keywords inç
+the HELP file, change this list of keywords to keep it in sync. ç
+Periodically to make sure the list of keywords is correct, after runningç
+XHELP, I PIP HELP.IDX to TEMP using the [l option to make them lowerç
+case, then edit to format a new list of keywords, sort them, and putç
+them back in the HELP file.
+
+====> AFTER EDITING HELP, ALWAYS RUN XHELP to rebuild its index,ç
+HELP.IDX.  If you don't, HELP will take longer to find things which haveç
+moved further down, and won't find things that have moved back in HELP. ç
+In a pinch, you can erase HELP.IDX, but help will run VEEERY slowlyç
+without it.
+
+**** Edit the BULLETIN and WELCOME to make it appropriate to yourç
+system.  The BULLETIN and WELCOME supplied are simply those fromç
+CBBS/Chicago, and aren't appropriate "as is" for your system.  Theç
+BULLETIN has a lot of verbage which perhaps hides its main purpose: toç
+have 1-2 line msgs with a date.  When the caller presses C or ^C, CBBSç
+will skip thru the file stopping at a line that starts with "]".  Thusç
+"]--> mm/dd/yy: blah blah..." is typical,
+but don't put a "]" in front of EVERY bulletin line, or it will becomeç
+tedious to skip them.  As they get older, I tend to delete the "]" soç
+all the older bulletins may be deleted at once.
+
+**** Edit the PASSWORD file to put in your system-operator password. ç
+CBBSOPER.DOC has details on additional passwords for file transfer via Mç
+command (if you set XFER EQU TRUE in CBBS.ASM).  Your operator passwordç
+is simply the entire first line of the file.  To get into operator modeç
+you must enter the "phrase" exactly (case doesn't matter, however).
+
+**** Edit NEXT, which looks something like:
+
+00100	<= Next message number to use
+    1	<= Next caller #.
+    1	<= Number of active messages (manually make this right)
+  300	<= Max # of messages allowed before CBBS says "no more room".
+
+Note that each line is 5-characters, immediately terminated by aç
+carriage return.  The next msg # MUST BE leading-zero filled, the restç
+MUST NOT BE.  If you want any short message to be "forced upon yourç
+callers", see CBBSOPER.DOC about FLASH messages from NEXT file.
+
+**** Make a USER file.  A program, USERBILD.COM, is supplied for thatç
+purpose.  Type: USERBILD x: where x is the drive you want the USER fileç
+on.  It will prompt for file size etc.  CBBS supports 511, 1023, or 2047ç
+entry USER files.  CBBS hashes a caller to a slot in the file, thenç
+scans forward up to 20 entries to find the caller, replacing the oldestç
+within the 20 if the name is not found.  Each entry is exactly 64 bytesç
+long, and looks exactly like the third line below: (the numbers are justç
+for position reference):
+
+         1         2         3         4         5         6
+12345678901234567890123456789012345678901234567890123456789012
+     , ,                     ,     ,        ,     ,     ,0000G
+
+The commas must be in the exact positions (columns) shown above.  (Noteç
+that some editors call the first column "1", others "0").  Columns 58-61ç
+(now containing "0000") is optional, and is the slot #, useful whenç
+typing the file or using the CBBS type command to scan for a particularç
+record, or even to restore the order of USERS if you SORTed it for someç
+other purpose (by name, etc) and want to "put it back".  The G is aç
+special bit-pattern, documented in CBBSSUB3.ASM or CBBSOPER.DOC andç
+contains the default settings for a caller for SHORT, e(X)pert, (C)ase,ç
+(D)uplex, and (P)rompting bell.  (The default is "not short", "notç
+expert", upper/lower case, "not full duplex", prompting bell on).  Thisç
+field is not actually used, because when a caller hashes to a particularç
+slot, this byte is initialized to overlay the (possible) previousç
+caller's options.  Another default, such as prompt bell off, may be setç
+using the information in CBBSSUB3.ASM, and the prompt bell switch "BELL"ç
+in CBBSWORK.ASM may be set initially to off.  CBBSSUB3.ASM would have toç
+be modified to plug a "C" instead of a "G" if you wanted the bell offç
+default.  It would do NO GOOD to change it in the user file for emptyç
+records.
+
+The file must have 511, 1023, or 2047 entries based upon the setting ofç
+ULEXM in CBBS.ASM and as specified when running USERBILD.  If youç
+generate your USER file with an editor or other means be ABSOLUTELY sureç
+the records lie on sector boundaries.  If each record is a byte too longç
+or short, the random access to it would not work.  With release 3.6.2,ç
+the user file may be 32, 64, or 128K.  CBBS never hashes to nor uses theç
+last couple records in an extent - this saves backing up across anç
+extent when doing the 20-entry scan.
+
+	################
+
+5. TESTING CBBS
+
+Make up a skinnied-down CBBS disk for testing.  Assemble CBBS with TESTç
+equ TRUE so CBBS won't attempt to connect to the phone line.  Also, ifç
+the system you are testing in is the same as or has the same senseç
+switch as the system you will run CBBS live on, you can forget the TESTç
+equate, and just use the sense switch to go into local mode.  Just logç
+in the disk, and type CBBS.  It should come up with a prompt, and startç
+printing the welcome and bulletin.  In TEST, all files should be on theç
+one disk.
+
+If you have trouble with it, use the symbol table produced by theç
+assembly, and the Digital Research SID debugger.  (I personally wouldn'tç
+attempt to debug something as complex as CBBS with only DDT and if Iç
+simply HAD to, I'd try to get a full .PRN listing to base it upon .. orç
+at LEAST print out the symbol table produced by LINKASM).
+
+NOTE that CBBS makes use of "CALL" statements that are followed byç
+parameter lists, such as CALL ILPRT and CALL GETVAR, so some of the SIDç
+trace functions, notably "TW" (Trace Without subroutine calls) won'tç
+work.  The breakpoint TW sets after the CALL ILPRT will put FF (rst 7)ç
+into the parameter list instead of further down where ILPRT or GETVARç
+actually returns.  A way around this is to put a PASS point at ILPRT andç
+GETVAR and then manually go from there.  Sorry for this difficulty.
+
+In general when debugging with SID, I set a passpoint at CNUL (p.cnul),ç
+the routine branched to by the N (null set) routine.  This gives me aç
+way to quickly return to SID if I see something I want to dump, patch,ç
+etc. - I just execute the N function.  
+
+	################
+
+6. THINGS TO WATCH FOR
+
+A. ==> IF YOU DO NOT HAVE A PMMI MODEM:  We used a PMMI modem for theç
+last few years, but recently switched to an outboard UDS on a N* HS4IOç
+board.  Thus the CBBSIDS and CBBSHAYS routines have gotten out of date. ç
+Specifically, when file transfer mode was added the appropriate fileç
+transfer modem subroutines have only been added to the PMMI and MODMç
+code.  I believe the three routines necessary for another modem are:
+
+RECVDG	which clears garbage chars from the modem - typically by 2
+	"IN port" instructions.  NOTE there may not necessarily be a
+	char
+	ready to be input - so calling an input routine would HANG.
+RECV	Get a char from the modem.  B contains the # of seconds to wait.
+	If that many seconds elapse, set carry and return without a
+	char.
+SEND	Sends the character in A to the modem and returns.  Must wait
+	for status to keep from overrunning the modem.
+
+After putting these appropriate routines into CBBSMODM.ASM, make yourç
+CBBSMODM.ASM look like the end of CBBSPMMI.ASM with respect to linkingç
+to CBBSXFER if you have XFER EQU TRUE.
+
+If you are running a Hayes Smartmodem, there is a module CBBSSMOD.ASMç
+that may get you off to a start - rename CBBSMODM.ASM to something else,ç
+and rename CBBSSMOD.ASM to CBBSMODM.ASM - so its code will be linked in.
+
+B. ==> If you run CBBS in user 0, and want to use file transfer, youç
+must take precautions to disallow people from accessing CBBS files.  Theç
+most simple way would be to have the modem transfers on a separate diskç
+from any of the CBBS files.  This would mean running a 2-disk systemç
+with a 1-disk CBBS (all files on A:) and leaving B: open for fileç
+transfer stuff; or running a 3-disk system with a 2-disk CBBS (CBBSç
+files on A: and B:) and leaving C: open for file transfer.
+
+Another way would be to have the file transfer stuff limited to user 1ç
+as its lowest which has been implemented in CBBS as of version 3.6.2.
+
+		----------------
+C H A N G E   H I S T O R Y
+
+04/14/83 Vers 3.6.2 add doc about importance of clock board.
+09/25/83 Vers 3.6.2 add doc about squeezed files, DCOMMENT, user ranges,ç
+etc.
+10/01/83 Doc FIND and T.COM as now included on disk.
+                                     
