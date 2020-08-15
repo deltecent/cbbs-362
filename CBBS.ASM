@@ -1,5 +1,5 @@
 ;CBBS V3.6.2 	FILE CBBS.ASM - MAINLINE
-;09/24/83 08:00:43
+;08/14/20 19:47:00
 ;
 ;LINKS TO CBBSMAIN.ASM
 ;
@@ -203,10 +203,11 @@ remote	equ	80h		;ssw on for remote
 rdssw	in	ssw		;go to start if remote
 	ani	remote		;	switch turned off
 	ret
+clock1	equ	false		;compupro ss1 clock? (file cbbsclk1.asm)
 clockc	equ	false		;compu-time clock? (file cbbsclkc.asm)
 clocks	equ	true 		;scitronics clock? (file cbbsclks.asm)
 clockh	equ	false		;Hayes Cronograph? (file cbbsclkh.asm)
-clock	equ	clockc or clocks or clockh ;have hardware clock?
+clock	equ	clock1 or clockc or clocks or clockh ;have hardware clock?
  endif			;wards
 ;
  if cbbschi	;================ CBBS/Chicago, N* hard disk system
@@ -256,10 +257,11 @@ remote	equ	80h		;ssw on for remote
 rdssw	in	ssw
 	ani	remote		;	switch turned off
 	ret
+clock1	equ	false		;compupro ss1 clock? (file cbbsclk1.asm)
 clockc	equ	false		;compu-time clock? (file cbbsclkc.asm)
 clocks	equ	true 		;scitronics clock? (file cbbsclks.asm)
 clockh	equ	false		;Hayes Cronograph? (file cbbsclkh.asm)
-clock	equ	clockc or clocks or clockh ;have hardware clock?
+clock	equ	clock1 or clockc or clocks or clockh ;have hardware clock?
  endif			;randys
 ;
  if Randys	;================ old cbbs/chicago
@@ -313,10 +315,11 @@ ssw	equ	0ffh		;sense switch port
 remote	equ	80h		;ssw on for remote
 rdssw	in	ssw		;go to start if remote
 	ani	remote		;	switch turned off
+clock1	equ	false		;compupro ss1 clock? (file cbbsclk1.asm)
 clockc	equ	false		;compu-time clock? (file cbbsclkc.asm)
 clocks	equ	true 		;scitronics clock? (file cbbsclks.asm)
 clockh	equ	false		;Hayes Cronograph? (file cbbsclkh.asm)
-clock	equ	clockc or clocks or clockh ;have hardware clock?
+clock	equ	clock1 or clockc or clocks or clockh ;have hardware clock?
  endif			;cbbschi
 ;
  IF CUST	;================ Your custom system
@@ -369,10 +372,11 @@ remote	equ	80h		;ssw on for remote
 rdssw	mvi	a,remote	;fake up sense switch
 	ora	a		;	since system has none:
 	ret			;	always remote mode.
+clock1	equ	false		;compupro ss1 clock? (file cbbsclk1.asm)
 clockc	equ	false		;compu-time clock? (file cbbsclkc.asm)
 clocks	equ	true 		;scitronics clock? (file cbbsclks.asm)
 clockh	equ	false		;Hayes Cronograph? (file cbbsclkh.asm)
-clock	equ	clockc or clocks or clockh ;have hardware clock?
+clock	equ	clock1 or clockc or clocks or clockh ;have hardware clock?
  endif			;cust
 ;
  if test	;===============;Non-modem-clock-tty
@@ -421,14 +425,14 @@ remote	equ	80h		;ssw on for remote
 rdssw	mvi	a,remote	;fake up sense switch
 	ora	a		;	since system has none:
 	ret			;	always remote mode.
+clock1	equ	false		;compupro ss1 clock? (file cbbsclk1.asm)
 clockc	equ	false		;compu-time clock? (file cbbsclkc.asm)
 clocks	equ	false		;scitronics clock? (file cbbsclks.asm)
 clockh	equ	false		;Hayes Cronograph? (file cbbsclkh.asm)
-clock	equ	clockc or clocks or clockh ;have hardware clock?
+clock	equ	clock1 or clockc or clocks or clockh ;have hardware clock?
  endif
 ;================
 ;
 ;	________
 ;
 	LINK	CBBSMAIN 	;NEXT .ASM FILE
-                                                                                             
