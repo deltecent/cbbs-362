@@ -421,6 +421,7 @@ md2	dcx	h
 	STA	TWITSW	;NOT TWIT
 	STA	NONEFLG	;NOT SHORT OUTPUT
 	STA	HOLDFLG	;OPERATOR HOLD MODE
+	STA	BELLF	;TURN OFF BELL PROMPT
 	sta	printsw	;operator hard copy mode
 	sta	prevhi	;show no prev hi msg.
 	sta	markcnt	;# of msgs in marktbl.
@@ -436,7 +437,6 @@ md2	dcx	h
 	INR	A	;MAKE 1
 	STA	ECHOFLG	;ECHO MODE
 	STA	PASSFLG	;NOT OPERATOR MODE
-	STA	BELLF	;TURN ON BELL PROMPT
 	sta	minesw	;turn on "auto mine" switch
  endif
  if xfer and reinit
@@ -896,4 +896,3 @@ BADRATE	CALL	ILPRT
 	ENDIF		;PMMI OR IDS
 ;
 	LINK	CBBSSUB3 ;TO NEXT .ASM FILE
-                                          
