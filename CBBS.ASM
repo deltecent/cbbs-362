@@ -6,7 +6,7 @@
 VERS	EQU	3	;PRINTED AT SIGNON
 MODIF	EQU	6	;(9 MAX)
 LEV	EQU	2	;(9 MAX) or 'alpha char'-'0'
-hack	equ	'f'	;' ' if none, else one ascii char
+hack	equ	'g'	;' ' if none, else one ascii char
 ;
 ;	O O O	O O	O O	O O O
 ;	O	O   O	O   O	O
