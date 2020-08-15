@@ -72,7 +72,7 @@ FLAGPTR	DW	0
 ;
 ;BELL FLAG, LOW BIT ON MEANS ECHO PROMPTING BELL
 ;
-BELLF	DB	1
+BELLF	DB	0
 ;
 ;MESSAGE TO TYPE WHEN BAD FUNCTION ENTERED
 ;
@@ -421,4 +421,3 @@ FCBEXT	EQU	FCB+12
 FCBS2	EQU	FCB+14
 FCBNSEC	EQU	FCB+15
 FCBRNO	EQU	FCB+32
-                                                                                                                             
