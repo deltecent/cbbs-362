@@ -123,10 +123,10 @@ y2	db	'3'	;..year printed
 ;
 ; ONE of these five MUST be true, rest false;-----------;
 ;							;
-cbbschi	equ	true 	;cbbs/chicago things.		;
+cbbschi	equ	false 	;cbbs/chicago things.		;
 wards	equ	false	;Ward's CPMUG system?		;
 randys	equ	false	;Randy's system or CBBS CHI test;
-cust	equ	false	;YOUR custom system		;
+cust	equ	true	;YOUR custom system		;
 test	equ	false	;Test version for non-modem:	;
 			;(All files default to 		;
 			;logged on disk)		;
@@ -325,18 +325,18 @@ clock	equ	clock1 or clockc or clocks or clockh ;have hardware clock?
  IF CUST	;================ Your custom system
 	db	'cust'		;compile id
 UKILL	EQU	1		;TRUE, USER CAN KILL OWN MSGS
-mhz	equ	4		;4mhz system?
+mhz	equ	2		;2mhz system
 ulog	equ	true 		;want user logging?
 ulexm	equ	1		;# names: 1:512 3:1024 7:2048
 upass	equ	false		;user passwords?
 upassn	equ	false		;new user, password wanted?
-xfer	equ	false		;Want file transfer?
+xfer	equ	true		;Want file transfer?
 msgapp	equ	false		;must msgs be approved to be read?
 minfnc	equ	true		;is "M" cmd in fnc menu?
 reinit	equ	true 		;re-init (cbbs stays in mem?)
 diskmsg	set	'A'-'@'
-diskro	set	'B'-'@'
-disklk	set	'B'-'@'		;killed, log, users, notes
+diskro	set	'A'-'@'
+disklk	set	'A'-'@'		;killed, log, users, notes
 tty	equ	false 		;is there a log tty?
 ttylr	equ	false		;is tty status low ready?
 ttyst	equ	2		;status bit (jz wait loop)
@@ -355,26 +355,22 @@ ids	equ	false		;have IDS modem?	<<
 pmmi	equ	true 		;have PMMI  modem?	<<
 sermodm	equ	false		;have serial modem?	<<
 pmmib	equ	0c0h		;PMMI base address
-bymsg2	db	'From  Xxxxx:  Thanks for calling, ',0
-	put your names in xxxxx above 				<<<<
-phoneop	db	put your operator name/phone numbers here	<<<<
+bymsg2	db	'From Patrick:  Thanks for calling, ',0
+phoneop	db	'sysop@mitsaltair.com'
 ;			terminated by:  
 	db	cr,lf,0
 motctl	equ	false		;want drive motor on/off ctl?
-motoron	equ	$		;drive motor on code
-;	...
-motorof			;drive motor off code
-	...
-	ret
+motoron	ret	;drive motor on code
+motorof	ret	;drive motor off code
 ; sense switch read, return non-zero if remote mode
-ssw	equ	0??h		;sense switch port
+ssw	equ	0ffh		;sense switch port
 remote	equ	80h		;ssw on for remote
-rdssw	mvi	a,remote	;fake up sense switch
-	ora	a		;	since system has none:
-	ret			;	always remote mode.
-clock1	equ	false		;compupro ss1 clock? (file cbbsclk1.asm)
+rdssw	in	ssw		;
+	ani	remote		;switch turned off?
+	ret			;
+clock1	equ	true		;compupro ss1 clock? (file cbbsclk1.asm)
 clockc	equ	false		;compu-time clock? (file cbbsclkc.asm)
-clocks	equ	true 		;scitronics clock? (file cbbsclks.asm)
+clocks	equ	false 		;scitronics clock? (file cbbsclks.asm)
 clockh	equ	false		;Hayes Cronograph? (file cbbsclkh.asm)
 clock	equ	clock1 or clockc or clocks or clockh ;have hardware clock?
  endif			;cust
