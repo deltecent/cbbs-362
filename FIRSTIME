@@ -1,0 +1,60 @@
+File "FIRSTIME" last updated 07/14/20
+
+[Want info on using a video terminal with CBBS
+When the system is typing, you can use control-S to stop the output to look
+at it, then again to continue.  This will allow you to see what is sent
+before it scrolls off.
+]
+[Want summary of system functions
+
+The system has only four major functions, all related to supplying
+communication within the CP/M User's Group:
+
+    --> Entering messages
+    --> Retrieving message summaries
+    --> Retrieving messages (By message number)
+    --> Downloading files
+
+][Want to know purpose of this system
+
+CBBS was conceived by Ward Christensen and Randy Suess in 1978.
+
+CBBS/NV is programmed, financed (except for compilmentary copy of
+  CP/M 2.2 from Digital Research), and run by Patrck Linstruth.
+
+Typical topics relate to previous and future volumes, bug fixes, offers to
+submit or review programs, comments and questions on programs that have
+been submitted but not yet released, etc.
+][Want to know what hardware makes up the system
+The virtual hardware consists of:
+- AltairZ80 simulator
+- 2MHz 8080 CPU
+- 56K memory
+- PMMI MODEM adapter
+- MITS 88-2SIO serial adapter
+- CompuPro System Support 1
+- Digital Research CP/M 2.2b with 8MB BIOS
+- 8MB floppy drive
+][Want a quick summary of what to do your first time
+1.  S - Use the S function to retrieve message summaries (or Q for
+        quick (subject only) summaries)
+    *   When prompted for a starting message number, use -50 to start 50
+        back from the highest message on CBBS.
+    *   Use control-S to stop/start output.
+    *   Write down msg numbers of interest, or..
+        Flag the msgs you want to see by pressing F while the NEXT
+        summary types (or press return to return to flag a msg you missed).
+    *   Use control-K to kill the summary. This automatically starts the
+        flagged retrieval.
+2.  R - Use R function to retrieve messages of interest.
+3.  G - Use the G (Good bye) function when you are done.
+        You will be able to leave comments at this time.
+]
+==> Use  H  command if you need help.
+
+NOTE:  When you receive the line:
+
+FUNCTION: (A,B,C,D,E,G.....) (OR ? IF NOT KNOWN)?
+
+--> Please reply ? the first time so you learn of all the
+    functions available.

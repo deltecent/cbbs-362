@@ -1,0 +1,80 @@
+SCANHELP last updated 10/09/82
+
+--> To summarize all:
+Enter the starting msg #, press return.
+
+--> -nn is also a valid starting number, and means "nn" messages back from the
+most recent.
+
+--> To search for a keywords: 
+Enter the starting msg #, a comma, then the keyword. Multiple keywords may be
+entered, separated by spaces.
+Ex: 1,software,sale,club	The commas mean 'or'.
+
+--> To flag a summary for later retrieval:
+Press "F" while the N-E-X-T summary is printing. It will acknowledge with
+ >F:nnnnn
+
+--> When you have seen enough, press K.  Any flagged messages will then be
+retrieved.
+
+[Want more info. on searching
+--> A search request looks like:  nn,xxx...
+where	"nn" is the starting message number,
+	"xxx..." is the search request.
+
+--> Search requests may include "and" and "or".
+Use "&" for AND
+Use ",", or "|" for OR
+
+-> The most simple search matches any field in the summary, i.e. date, from,
+to, subject.
+[Want to see some examples
+1,bug,fix			all bugs "OR" fixes
+1,software&trs			all software "and" trs
+1,modem & apple | hayes & apple apple modem info
+]
+[You can specify which field to search.  Want info
+
+--> Instead of just a keyword, enter:
+	x=keyword
+where x=
+   D  for "date"
+   F  for "who from"
+   T  for "who to"
+   S  for "subject"
+Ex:
+1,f=ward & s=modem	from ward, subject modem
+	This is more specific than
+1,ward & modem		which also finds "to ward"
+
+--> You may also use "not equal" instead of "=":
+	Either "<>", "!=", or "#" mean "not equal".
+Ex:
+1,software & <>cp	software, but not cp/m
+			anywhere in the msg
+1,software & s<>cp	software, and cp/m not
+			in the subject
+[Want more examples
+1,t=all & software & h8	Msgs to all about h8 software
+]
+]
+[Want info on finding "your" messages
+The command:
+	MINE
+will ATTEEMPT to find all messages to you.  It scans for your full name,
+or messages to you by first name only.
+
+]
+[Want info on auto-retrieve of selected messages
+Use the extended Q and S commands: QR and SR, which automatically flag for
+retrieval, all selected messages.  You need not explicitly flag them.
+
+If you want to skip one of the auto-retrieved messages, be sure to use C,
+and not K, since K will abort completely back to the main menu.
+]
+
+Think about your keywords: CP/M would not find  "CPM";
+"TRS-80" would not find "TRS80".  Better to use just
+"CP" and "TRS".
+

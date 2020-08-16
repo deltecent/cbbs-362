@@ -1,0 +1,83 @@
+ENTRHELP last update 09/27/83
+
+[Do you want brief list of message entry subcommands
+(A)bort back to main menu
+(C)ontinue inputting where you left off
+(D)elete a line
+(E)dit a line (string search/substitute)
+(G)et a previously entered msg, (Must know its number)
+(H)elp gives you this help
+(L)ist the message
+(R)e-enter any line (overlay what was there)
+(S)ave the message, return to main menu.
+]
+[Want more detailed help
+[Want help on 'A=ABORT' function
+The Abort function is used to abort the message entry.  Nothing you have
+done is saved.  You will return to the main menu asking which function
+you want next.  If you use abort, the system will confirm your intent to
+throw your msg away.
+][Want help on the 'C=CONTINUE INPUT' function
+The CONTINUE INPUT function allows you to continue to input your message
+where you left off, unless you have already entered the 20 line maximum.
+You will go back into input mode, prompted by the next open line number.
+][Want help on 'E=EDIT' function
+The EDIT function allows you to edit your message, by doing character
+string substitutions within a particular line.  For example, if you have
+a line with 'moem' in it, but you wanted it to be 'modem', use the E
+command, give the line number, (if not known, find the line number by
+using the L command) then when it asks, type: /moem/modem/ 
+  The first string will be searched for, and if found, will be replaced
+by the second string.  Any printable character may be used instead of
+the '/', providing it does not appear in either the old or new string.
+For example, to change "11/13/79" to "12/15/79" type: =11/13=12/15= i.e.
+use "=" as the delimiter for old and new string.
+  E keeps asking for the command, so you can perform multiple changes.
+When the line is right, just press return.
+  You can "shorthand" the edit command by placing the E command, line
+number, old and new, all on one line separated by ";"s.  Thus the above
+command becomes: e;3;moem;modem;
+ or e;12;11/13/79;12/15/79	(the closing ";" is optional)
+  A command of: /// prints the line with no changes.
+][Want help on the D and I (line delete and insert) functions
+D deletes a line.  You will be asked for the line number.  The following
+lines are all moved back 1, so be careful when deleting more than 1
+line:  D;1;D;2 would delete lines 1 and 3 because D;1 deleted 1, and
+renumbered old lines 2, 3..  into 1, 2...  Therefore to delete the first
+2 lines, type: D;1;D;1 (or delete "backwards" - d;2;d;1)
+
+I inserts a line.  You will be asked which line you want the new line
+inserted BEFORE, and then will be asked for the new line of data.  
+][Want help on the 'G=get msg' function
+If you want to get a previous message of yours to make changes to it
+instead of keying in a new one use the G command, and when asked, give
+the message number to be gotten.  After you get it, you can use all of
+the other commands, to modify this message, then save it back with "S".
+It will be saved as a new message, the highest one in the system, so be
+sure to delete (Kill) the old one you got if that is appropriate.
+][Want help on 'L=LIST' function
+The List function allows you to list your message, to 'proof read' it,
+or to find which line you made a mistake in.  You simply type: L;nn and
+the message will be listed starting at line nn.  (or you may type just:
+L and will be prompted for the starting line number.)  In CBBS versions
+3.0 or later, you may press K or ctl-K to stop the listing.  Control
+goes back to the enter subfunctions (not to the main menu, as with
+versions of CBBS before 3.0).  ][Want help on 'R=RETYPE' function
+The R function allows you to correct mistakes in your message by totally
+retyping any line.  The system will ask you for the line number to
+change, so be sure you know it in advance.  Use the L (list) command if
+you are not sure of the line number.
+][Want help on 'S=SAVE' function
+You use the Save function when you are satisfied that your message is
+correct, and that you want to store it.  CBBS will write the message to
+disk, and update the summary file and number of active messages.  When
+you want the message erased, you sign on the system and use the (K)ill
+function and the password you assigned (if any).
+]
+]
+To get out of message input at any time, just press return twice.  You
+will return to the ENTER sub-function menu, and can then use the (A)bort
+command to go back to the main menu.
+---
+Was this help useful?  If there's something you still don't know, leave
+a comment when you go (G command).

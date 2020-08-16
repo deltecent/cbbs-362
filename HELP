@@ -1,0 +1,877 @@
+	Sent to CBBS/Chicago 09/18/83 22:24:48
+[HISTORY=history of changes to the help file
+(For history of CBBS, see message 1)
+--1983--
+09/18 rewrite some keywords, add semicolon
+09/11 del ref to 450 baud, add 1200
+08/04 download
+07/26 A/ALTER/BAUD revised
+02/15 MODEM, OFF & STOP, BRIEF
+--1982--
+12/22 Clarify "EDIT".
+11/18 MINE
+11/14 *, #, #n, MARK, USERS
+11/09 O, OR
+10/16 CHAT, M, CONT, SR, QR, STAT
+09/17 correct several typos.
+09/14 PARITY
+09/05 KEYWORDS, CHAT, CP/M, CPM, CPMUG, END, EXIT, FLIP, HEADLINES,
+INFO, MAIN, NEWBAUD, OPERATOR
+07/25 OTHER
+04/18 NULL
+03/21 MENU
+02/07 ^C, ^E, ^H, ^K, ^S, ^W
+02/05 "-", "GAMES"
+--1981--
+12/31 "EDIT" and "READ" and mods to "PASSWORD"
+11/22 'COMMANDS'
+10/19 'LINEFEEDS'
+10/17 'V' updated, SELL added
+10/06 "MODEM",QUIT
+09/30 add "M" to summary flagging help
+09/16 CLUB
+08/13 change DOWNLOADING to DOWNLOAD
+07/25 AND+OR+CBBS+DOWNLOADING
+07/20 INPUT synonym for "E"
+07/19 re-describe "V" and ^H vs DEL
+07/18 #
+07/16 FIND, SCAN, ^X IN "CTL CHRS"
+07/15 NEXT, MAIL, NEW
+07/14 "H" AND "HELP" and +/- to RETRIEVE
+07/13 FLAG
+07/12 FUNCTIONS, NEWS, SHORT, LONG, FILES, SEARCH
+05/28 new HARDWARE documented
+][KEYWORDS=alphabetized list of keywords in this help facility
+[KEYWORD=
+#, *, -, 1200 baud, A, alter, and, B, backspace, baud, bell, boolean,
+brief, bulletin, bye, C, case, cbbs, chat, club, clubs, commands,
+comments, CP/M, CPM, ctl chrs, D, delete, double, download, duplex, E,
+echo, edit, end, enter, erase, esub, exit, expert, F, files, find, flag,
+flip, functions, G, games, goodbye, H, hardware, headlines, help,
+history, info, input, K, keyword, keywords, kill, leave, linefeeds,
+logoff, long, M, mail, main, mark, menu, message, messages, mine, N,
+new, newbaud, news, next, null, nulls, O, off, operator, operators, OR,
+other, overview, P, parity, password, phone, prompt, Q, QR, quick, quit,
+R, read, retreive, retrieve, S, sale, scan, search, sell, short, signon,
+software, speed, SR, stat, stop, summary, T, tab, time, U, update, use,
+user, V, video, W, welcome, why, X, ^C, ^E, ^H, ^K, ^L, ^N, ^R, ^S, ^W,
+^X.
+ 
+NOTE many of these are synonyms, i.e. multiple keywords which have the
+same explanation: (ex: D, DUPLEX, ECHO, DOUBLE, -or- READ, R, RETRIEVE)
+
+][MINE=Info on "MINE" command. The command "mine" attempts to find
+message TO you. It executes the following search: (Example using the
+name "Ward Christensen")
+ "or;1,t=ward chri,t=ward/,t=ward  "
+The first searches for your full first name and the first 4 letters of
+your last; the second search searches for your first name followed
+immediately by a /, as in "WARD/ALL"; the third searches for your first
+name only.  The two spaces following the first search ensure it matches
+ONLY when the first name is alone at the end of the line.
+
+If you are an expert user, (X command in effect) then the messages will
+also be retrieved, and the message numbers, (up to the first 9) will be
+stored in "variables" #1 thru #9.  Thus if there were 3 messages found
+by "mine", you can go back to re-retrieve the first by "r;#1", the
+second by "R;#2", etc.  If you reply to the second, you can kill it via
+"k;#2".  Further attempts to R or K #2 will come up "not found".
+
+Although all messages potentially to you will be summarized, only the
+ones which arrived since your last call will be retrieved.
+
+Note that "MINE" does not find msgs FROM you.  Do: "s;1,your name" to
+find them, since that will match your name in ANY field (from, to, even
+subject).  "Policing" for obsolete messages of yours will help the
+operator maintain CBBS and is greatly appreciated!
+][PARITY=CBBS does not set or test parity.
+CBBS sends 8 data bits, i.e. the parity = 0.
+][COMMANDS=Help with CBBS commands
+[MAIN=
+[INFO=
+[MENU=CBBS command menus
+Typing a question mark when CBBS is asking for a command, will give you
+the menu of supported commands.  Use this "H" (keyword help) command for
+details about any specific command letter.
+
+When in message entry (E command), a separate menu will be presented.
+][MESSAGES=Overview of same
+CBBS msgs are 1-20 lines, stored by 5-digit message number.
+O command gives one-line summary of them,
+S gives older 2-line summary (Takes more time than "O", and only shows
+  the message size that O doesn't show).
+Q gives quick (subject only) summary.
+R retrieves the messages,
+E is enter a message.
+
+For additional help, enter any of the above 1-letter commands here, in
+(H)elp command.  
+
+==> Be sure to press return to get OUT of (H)elp before trying to
+EXECUTE any of these commands. 
+][USER=CBBS REMEMBERING ITS USERS
+When you sign on, CBBS looks up your name in a table, set up for 512 or
+1024 names, depending upon operator option.  It "randomizes" you name to
+a particular record, and scans 20 records to see if it finds your name. 
+If it doesn't, then it REPLACES the oldest record among those 20.  The
+next time you call in, CBBS will have remembered the date, time, and
+high message number as of your last call.  See also keyword "*".
+
+Please spell your name correctly and consistently for this to work well!
+][*=PREVIOUS HIGH MSG #.
+If you have logged into CBBS previously and thus had your user
+statistics recorded, CBBS will remember the high message number on your
+previous call in a "variable" called "*".  Thus S;* or R;*;+ may be used
+to reference the previous high message.  The "#" command also shows the
+high message number.  (Technically, * represents the NEXT message to be
+entered when you previously signed on).
+][U=User command.  The U command records the settings of the following
+commands:
+  e(X)pert user mode
+  (P)rompt bell on/off
+  (D)uplex (echo/ho echo)
+  (C)ase (upper/lower)
+  SHORT (duplicate spaces sent to you or not).
+Simply set these as you want, type U, and CBBS will remember them and
+restore them the next time you call in, unless you don't call often
+enough and a newer caller has overlaid your record. "Often enough" means
+roughly once a month, possibly more.  (We HOPE to keep callers records
+for 2 months, but circumstances don't always permit that)
+
+U may also allow you to change your password, specifying a new 1-5 char
+password.  NOTE: Passwords are not currently enabled.
+
+][NULL=what is a null
+A null is a character with a value of 0, sent just to pass time for
+terminals that need time after a carriage movement operation.  If you
+need them, press control-N while CBBS types to you.  Each ^N will add 5
+nulls.  Use the "N" command to set an exact number of them.
+][GAMES=Games on CBBS? no.
+A very few people, ask CBBS to get games.  Sorry, no.  CBBS is a message
+system for sharing creative ideas and best serves that need by remaining
+a pure message system. 
+][-=use of "-"
+r;- retrieves the previous 10 messages.
+r;-nn retrieves message "nn" back from the highest.
+s;-nn retrieves the summaries "nn" msgs back from the highest.
+][LINEFEEDS=CBBS always sends linefeeds
+If your terminal or terminal program is double-spacing everything you
+see from CBBS, you might have some kind of "auto linefeed" switch set
+on.  CBBS uses the standard accepted ASCII character string "CR-LF" at
+the end of each line.
+][SHORT=Shorten CBBS output by suppressing some characters
+[LONG=Un-do what what was done by SHORT command:
+[BRIEF=shorten the output CBBS sends you (see also X <expert user>)
+The SHORT command causes certain duplicate characters to not be sent. 
+The characters are: space, and !"#$%&'()*+,-./ (Ascii 20-2F hex). This
+saves time on long distance calls, and generally, makes CBBS usage more
+efficient, and only a little bit less readable.
+
+To un-do the SHORT command, type SHORT a second time.
+][NEXT=What will the next message number be
+[#=What does the # command do
+# tells you next caller #, next msg #, and # of active msgs.
+
+If you are in expert mode and have flagged any messages in any of the
+summary commands, # will also show the designated message numbers.  See
+keyword: MARK.
+][MARK=Info on marked msgs
+When you flag messages during a summary, or in expert user mode use one
+of the auto-retrieve summary scans (QR, OR, SR), the first 9 msgs set
+for retrieval will be remembered.  #1 will refer to the first, thru #9
+which is the last.  You can then use #5 as the message number in a
+retrieve or kill command.
+
+][NEW=How does new user get help (or "what's new"?)
+Type HELP from the main menu, rather than just "H".
+
+To find out "what's new" use the "NEWS" command.
+][MAIL=Sorry, there are no "mailboxes" on CBBS.
+Some people ask if there are, but sorry, not at this time.  To leave
+"mail" for someone, just leave them a message with the the "E" command. 
+All messages are PUBLIC.  To leave "private mail" for the system
+operator, enter comments when you leave via the "Good bye command"
+(letter G).
+][FUNCTIONS=Misc. details about CBBS functions
+R: When you retrieve a msg, you must know its number. Use the (O)ne
+line, (Q)uick or (S)ummary command to search message summaries for
+keywords.
+   The most simple form is: O;1,xxxx   where xxxx is the keyword to
+search for.
+
+G: The Good-bye function allows you to leave comments. 
+
+X: toggles you into and back out of expert user mode.  It works at any
+time, except in keyword help.  For example, if you are in message entry,
+and need more details, type  X   then return.
+][HELP="New user" help function
+[H=Keyword-oriented help
+The "H" command, executed from the main menu, which is what you are
+doing right now, is the main way CBBS gives you assistance in its
+functions.
+
+Randy suggested, however, that new users don't necessarily "find" the
+"H" command, and type "HELP" even though we don't say that is available. 
+So, in 7/81, "HELP" was added.  It checks for the more commonly asked
+problems on CBBS.
+
+Feel free to try either of them - you can easily abort them.
+][CTL CHRS=Help with system control characters.
+To correct keying mistakes, you use:
+
+DEL/RUBOUT for character delete on non-video terminals, Control-H (or
+backspace) for char delete on a video terminal
+Control-R to reshow a corrected line
+Control-U to delete a line (ESC works, too, ala IBM PC)
+Control-W to video-backspace a word
+Control-X to video-backspace a line
+Control-L to see how long an input field is
+
+To control CBBS while it types to you, you use:
+
+Ascii, or control characters: C, K, N, and S
+
+C or control-C cancels what is being sent.  Output resumes at the next
+information typed, or the next question.  Use it when you know what the
+system is going to say/ask, or otherwise don't want to see more of what
+is being typed.
+
+K or control-K kills the current function.  It returns you to the
+function select menu.  It may be typed alone as the first character on a
+line in input mode.  If allowed, it will echo as: ^K  and you must press
+return to have it take effect.  If you get a ^K when you don't want it,
+cancel it with a control-U.
+
+K or control-K while in message entry returns you to the message entry
+menu.  CAUTION:  Older CBBS's returned you to the main menu no matter
+where you were.
+
+Each Control-N adds 5 to the number of nulls CBBS sends.
+
+S or control-S suspends output until some other character is typed.  Use
+this if you have a video display, and want a see something before it
+scrolls off the top of the screen.
+][^C=Cancel CBBS output
+While CBBS is typing something to you, pressing "C" or Control-C skips
+sending to you until the next input, or until the next "piece" of output
+(next summary, message, header, etc)
+][^E=Send carriage return/Linefeed to your terminal.
+Each time you press control-E, CBBS will send a CR-LF to you. It has no
+other action to CBBS.
+][^H=Backspace to correct typing errors.
+Each control-H (or backspace) you send to CBBS deletes another character
+from what you had previously typed.  It then echoes a backspace-space-backspace to you, to erase the character. If ^H is not convenient for
+you to type, but you want video backspaces, use the "V" command to
+assign a new key (such as "\" for your video backspace.
+][^K=Kill out of current function.
+Pressing "K" or Control-K while CBBS types to you, will usually kill-out
+of what you are doing, and go back to the main menu.  Exceptions: In
+message entry, ^K returns to the message entry sub-menu; During Q or S
+summary, if you have flagged and messages, ^K starts retrieving the
+flagged messages;
+][^L=Find how long an input field is.
+Often you want to take advantage of the maximum length of input fields,
+particularly when entering a message and specifying "WHO TO" and
+"SUBJECT".  Typing ^L will CR/LF, then type a line of _____ letting you
+know exactly how long the input field is.  You can type this control
+character after partially answering - it will print the "___" line, then
+fill it in with what you have typed.  Example:
+
+Subject:?
+ At this time, you type "1200 baud modem for sale", press ^L and get:
+1200 baud modem for sale______ 
+CBBS then leaves you positioned after the word SALE, showing you have 6
+more characters you could have keyed in.
+
+^L acts like ^R, except that it prints the line of "___" first.
+][^N=Send 5 more NULLS.
+If your terminal or printer needs extra time after CBBS sends each
+Linefeed, each control-N you type adds 5 nulls. Use the "N" command to
+pick the exact number that works best for you.
+][^R=Re-show line.
+If you have made changes to a line (by backspacing, or on non-video
+terminals, by pressing DEL (or RUBOUT), control-R sends CR/LF then
+echoes back the line to you as CBBS sees it.
+][^S=Suspend output from CBBS
+Pressing S or Control-S, stops CBBS from sending to you. Press another S
+to start back up.  Other keys, such as C/R or Q or control-Q will also
+work.  Pressing another key which CBBS understands, such as C or K, will
+take that key's appropriate action.
+][^W=Word backspace.
+When keying in, pressing Control-W will cause CBBS to back up over the
+last word you keyed in.  For simplicity, words are delimited by either a
+space, or a ";".  If it backs up too far, you can press ^C while it is
+still backing up, to have it stop backing up.  If you type a line (such
+as in a message) that you realize is too long, you can ^W to back up to
+make the line short enough to avoid the truncation message CBBS prints.
+
+][^X=Line backspace.
+After keying in a line, pressing control-X will cause CBBS to 
+backspace-out the line.  While it is backing up, ^C stops it backing up,
+and leaves the line containing what you see.
+][HEADLINES=
+[NEWS=The CBBS NEWS function
+NEWS is a simple function of CBBS, intended as an extension of the
+bulletin
+- to keep the bulletin (relatively) small. NEWS asks if you want
+(H)eadlines, or (D)etails.  NEWS will contain the latest changes on CBBS
+usage tips, hints, etc. The latest news will always be first.  Typing K
+will kill the NEWS function, and return you to the main menu.  The best
+way to access news is with the detail option, using C (or ^C) to skip
+the details you don't want to see, and K (or ^K) to kill out of it
+completely.
+][C=Case change command (upper/lower).
+[CASE=changing CBBS between Upper-only, and upper-lower case.
+The C command changes CBBS between upper-case-only mode, and upper-lower
+mode.  CBBS also senses your case when you reply to the "Y/N is this
+your first time...".  If you reply with a lower case "y" or "n", CBBS
+will flip from the default upper-case-only mode, into lower-upper mode. 
+If you enter "Y" or "N", (i.e. upper case) CBBS stays in upper case
+mode.  If you (E)nter a message, CBBS will ask if you can handle lower
+case (because messages in lower case look nicer). This will only be
+asked once.
+][ENTER=Help with entering a message into system.
+[MESSAGE=How to enter one (see "R" for how to retrieve)
+[E=Message entry function
+[INPUT=How to input a message to CBBS
+The E (Enter) function is used to enter messages into the system.  A
+message is any information to be conveyed to 1 or more people.  You may
+leave messages for a specific person or group, or "ALL".  It consists of
+up to 20 lines, each line up to 78 characters.  You may assign a
+password to be able to erase your own messages.  Using the Enter
+function, you key in your message just as if you were simply typing it
+at a typewriter.  The system will put line numbers at the front of each
+line (like a BASIC program).  After the message has been keyed in, you
+can edit it, list it, save it, or abort.  See help keyword "ESUB" for
+the enter function subcommands.  You can also base your message on a
+previous one, getting that msg, and editing it.  See ESUB.
+][ESUB=Edit function subcommands.
+ Once you have keyed in your message (or part of it) here are the
+subcommands of (E)nter you may use:
+
+-(A)bort: discards your message, returns to main function menu.
+-(C)ontinue input.  If room, continues inputting at msg end.
+-(D)elete a line: You specify the line number.  Following lines are
+moved back to fill up the space.
+-(E)dit a line: allows a character-string-substitution type edit to be
+performed on a particular line. (Example:
+/moem/modem/   to correct a misspelled word.
+-(G)et previous msg: allows you to fill the edit buffer with the
+contents of a previous message, then edit it.  Particularly useful for
+updating "for sale" msgs, deleting items sold, changing prices, etc.
+-(H)elp types a help file allowing you to get details on any of the
+subcommands
+-(I)nsert a line: You will be asked for a line number, then to key in a
+new line, which will be inserted BEFORE the specified line #.
+-(L)ist allows listing from a starting line #.  The entire message from
+that line is listed, unless you press K or control-K to skip back to the
+Enter subcommand menu.
+-(R)etype allows entirely retyping any line, use it when (E)dit would be
+too tedious.
+-(S)ave saves your message on disk, and returns to the main function
+menu.
+][UPDATE=Update a message you previously entered.
+][EDIT=Editing a message
+To edit a message you have already saved, use "E" as though you were
+going to enter the message again.  Re-enter who to, subject, etc.  When
+prompted "01?" for the first line of text, instead of typing any lines,
+press return and in the enter sub-function menu, use "G" to get the
+previous message. (You must know its number).  The (H)elp subcommand of
+message entry will help you with getting a previous message, and editing
+it or what you have just keyed in.
+][LEAVE=see "E" to leave a msg, "G" to leave the system
+E means to enter a message. G means to say "good bye".
+][KILL=
+[DELETE=
+[ERASE=Help on killing (Erasing) messages. (Use K function)
+[K=Kill function
+
+To kill (erase) a message from you to to you, you use the "K" function.
+You'll be prompted for the message number.  If the message is found and
+is killable, it's summary will be typed for verification that you
+entered the correct number.  If it was saved with a password, you'll be
+asked for it.
+][SUMMARY=Help with system summary function.
+[O=One-line Summary command
+[S=Summary command
+[Q=Quick summary command
+[SR=Summary command with auto retrieve
+[QR=Quick summary command with auto retrieve
+[QUICK=Help with system summary functions.
+
+The (S)ummary function prints 2 lines for each message in the system,
+from a given starting message number.  Use ctl-K to abort the summary
+listing.  The Summary prints:
+
+ Message number
+ # of lines in message
+ Date Created
+ From
+ To
+ Subject
+
+The (O)ne line summary squeezes this all on one line, omitting only the
+number of lines in the message.
+
+The (Q)uick summary function prints only msg # and subject.
+
+You will be asked for the starting message number, (you need not enter
+leading zeros).   Alternatively, you may enter a number of the form -n,
+where n is number representing 'n back from current high'. For example
+q;-15 would start the scan from the 15th most recent message.  (or, you
+could type Q, then press return, and when asked for the starting message
+#, reply with -15).  ";" is used to separate "anticipated" answers.
+
+See help keyword "SEARCH" for info on searching messages. See help
+keyword "FLAG" for flagging msgs for retrieval while the Q or S summary
+is running.
+
+Use OR, QR or SR to summarize AND retrieve the messages.  Example:
+or;1,modem  will retrieve all messages with "MODEM" anywhere in the
+subject, who from, or to.
+
+][SEARCH=Help with searching summaries for content.
+[FIND=Find message with certain contents or from or to.
+[SCAN=Scan messages for content
+
+The (O)ne line summary, (S)ummary and (Q)uick summary commands allow you
+to search the summary for specific keywords.
+
+When asked for the starting message number, type ? to get help on how to
+search.
+
+Most simply, to search, enter the starting message number (usually 1), a
+comma, then a keyword to search for.
+
+Use as short a keyword as possible which will still be unique.  Being
+too specific might miss some messages.
+
+Use help keyword "BOOLEAN" for info on using "and", "or", and "not" as
+well as field specifications, while searching.
+][BOOLEAN=Doing "and", "or" and "not" while searching.
+[AND=using "and" to search messages
+[OR=using "or" to search messages
+(( IF you were looking for "OR" as "One line summary with Retrieve, use
+   keyword "SR" ))
+
+The S and Q commands allow a search string, after you type the starting
+message number (then a comma).  Example:
+
+ s;1,cp/m
+
+You can specify fields, such as "F=WARD" which means "From Ward", etc.
+
+For full details, use the S command, but when asked for a starting
+message
+number, type a question mark:  ?
+][RETRIEVE=Help with retrieving messages.
+[RETREIVE=Mis-spelling of "RETRIEVE"
+[READ=read a message
+[R=The retrieve function.
+
+The retrieve ("R") function is used to retrieve a message from the
+system.  You must know the message number, which you can find using the
+S (summary) or Q (quick summary) function.  You will stay in "retrieve
+mode" until you press return to go back to the function menu.
+
+NOTE:  When asked for a message number:
+ + means the "next 10" messages
+ - means the "last 10".
+Using "-" before you do any other message summary or retrieve, will
+cause CBBS to start retrieving backwards from the latest message.  There
+is no backwards-summary capability.
+
+Once you are "IN" the retrieve function, CBBS will continue to ask you
+for message numbers.  You can "shorthand" them by specifying only the
+low-order digits that have changed from the previous number you entered. 
+Thus,
+
+ r;500;3
+
+will retrieve 500 and 503.  To then retrieve message 1, you'd have to
+specify 00001, because just 1 would be taken to mean 501.
+
+See keyword "FLAG" for info on flagging summaries for later retrieval.
+][FLAG=Flag msgs for retrieval while summary types
+[F=Press "F" during summary to flag for retrieval
+[M=Press "M" during Q/S summary to flag ones you missed
+
+While the "Q" (quick) or "S" (Summary) is typing, you can ask that a
+message be flagged for automatic retrieval. Just press your "F" key,
+during the N-E-X-T summary. (That gives you time enough to see the
+complete summary of the message you might want to flag).
+
+To flag the last summary, press F while CBBS types the line 
+"------END OF SUMMARY------"
+
+NOTE: At baud rates greater than 300, or with the "Q"uick summary, you
+might not have enough time to decide to flag a msg.  In that case,
+pressing "M" (or Return, which is actually control-M), will have CBBS
+ask for the msg #.  You may type a single number, or multiple numbers,
+separated by ";".  The first number will be taken literally.  Subsequent
+numbers on the same line separated by ";" will overlay the RIGHT part of
+the first number.  Thus if CBBS prompts "Msg #'s: to retrieve" and you
+reply 12345;6;7;78, it will stack requests to retrieve 12345, 12346,
+12347, and 12378.
+
+The QR, OR, and SR commands automatically flag ALL selected messages for
+retrieval.
+][STOP=Stop CBBS
+To leave CBBS, use the G command (Means <G>ood bye). To stop output from
+CBBS, press C to stop some, K to <K>ill back to the main menu, (or the
+message entry menu if you are in <E>nter.)
+
+There may also be a STOP command, which sets the # of stop bits on the
+modem to 1 or 2.
+][END=
+[EXIT=
+[OFF=
+[LOGOFF=
+[QUIT=Want to "quit" out of CBBS?
+[GOODBYE=How to sign-off the system.
+[G=The GOODBYE function.
+[BYE=Leaving CBBS.
+[COMMENTS=Leaving comments about CBBS without entering a msg.
+
+Typing G when asked for the function, will get you off the system.  You
+will give you a chance to leave comments about the system, just by
+keying lines in. (no editing, etc).
+][NULLS=Help with system sending nulls.
+[N=The Nulls function.
+
+Certain terminals require nulls to be sent to them following a carriage
+return/line feed, for instance the T.I. Silent 700 series.  The 'N'
+function is used to set the number of nulls, to any value from 0 to 255.
+
+However, if you need nulls, you would want to get them from the
+beginning.  While the system is typing, pressing control-N will cause
+the system to send 5 nulls after each linefeed.  Each time CBBS sees you
+type an ^N, it adds 5 to the number of nulls being sent.  Use the "N"
+COMMAND to set exactly how many you need (experiment with it).
+][PHONE=
+[BULLETIN=Help with retrieving Bulletin and Welcome messages.
+[B=Bulletin reprint function.
+[WELCOME=Help with retrieving Bulletin and Welcome messages.
+[W=Welcome reprint function.
+
+When you first got onto the system, the system typed a "Welcome"
+message.  It included some useful information such as a brief summary of
+the control characters accepted by this system.  Then, if there were any
+bulletins, they printed.
+
+If you missed either (used "C" or control-C) or just want to see them
+again, function 'W' will retype the welcome message, and function 'B'
+will retype the bulletin.
+
+If the operators voice phone numbers are available, they are in the
+bulletin.
+][DUPLEX=Help with system character echoing features.
+[D=The Duplex (Echo) function.
+[ECHO=Help with system character echoing features.
+[DOUBLE=Is your terminal typing every character twice?
+
+The D (for Duplex) function switches the system between Full Duplex
+(which echoes what you type) and Half Duplex (which doesn't echo what
+you type) mode.  Some teletypes and other devices print immediately when
+you press a key, so you don't want the system to echo characters back to
+you.  Use the D function to switch to or from this mode.
+
+Note the "U" command will remember the setting of "D" for your next
+call.
+
+Also note, that if CHAT is available, you cannot CHAT in half-duplex,
+because the operator can't see what you're typing.
+][BELL=Help with system Prompt (bell on/off) function.
+[PROMPT=Help with system Prompt (bell on/off) function.
+[P=The prompt (bell) function
+
+Every time the system wants you to type something, it sends you a
+question mark, then a bell character.  The P function may be used to
+toggle the sending of the bell prompt.  Using P flip/flops this function
+(bell on, bell off, etc). The bell ALWAYS rings in column 75 to warn you
+of the 78 char line length limit for message input.
+
+Note the "U" command will remember the "P" setting for your next call.
+][EXPERT=Help with eXpert users mode.
+[X=The expert mode function
+
+The X function puts you into expert user mode.  It shortens all prompts,
+and deletes some lines such as the headers in the summary print.  Use it
+to save time after you have become familiar with the system.
+
+As of CBBS 3.5, "X" works at any time - if a prompt is too "cryptic"
+because of being in expert mode, just type X then press return.  The
+longer prompt will then be given.  NOTE THAT it DOESN'T work in HELP
+(where you are now) because "X" means a request for the help on the X
+command.
+
+Experts will also want to take advantage of the ";" character to
+separate multiple answers.  For example, a typical logon would be:
+  n;firstname;lastname
+
+Note the "U" command will remember the "X" setting for your next call.
+][USE=Help with using system efficiently.
+
+1) Minimize connect time: only 1 phone into system.
+2) Press "C" to cancel typing if you know what is being typed or don't
+want to see more.
+3) Use message summary retrieval to see what messages you want to see. 
+For example, use o;-50 to see the one-line summaries of the last 50
+msgs.
+4) If you plan on leaving a message, have it well thought out to
+minimize the 'compose' time while you are on the system.
+5) Once you learn the questions being asked, answer multiple questions
+in advance by separating your answers with a semicolon (for example: s;1 
+or r;23;24;25).
+][VIDEO=Help with video backspace function.
+[BACKSPACE=Help with video backspace function.
+[V=Video backspace mode function.
+If you are on a video terminal which can backspace, use your backspace
+key to correct a character.  (Backspace is ctl-H)
+
+(If you want video backspaces echoed to you, but you want to press a key
+other than ^H, use the "V" command to select an additional backspace
+character, such as "\" or DEL/Rubout.)
+
+If you are on a non-backspacing terminal, use DEL (sometimes labeled
+RUBOUT) to delete a character.
+
+On video terminals, you can also use ^W for word delete, and ^X for line
+delete.  You can even ^C out of them (!!) (i.e. as it is backing up, ^C
+to stop it), if you realize you have gone too far.  (a nit, but neat!)
+][TAB=Use of control-I (TAB) characters.
+
+When entering messages, you may now utilize the control-I or tab key. 
+This will allow you to format your messages without adding too much
+space to our files. The tab key spaces over to the next tab field which
+is 8 characters wide.
+][FILES=Some information about CBBS file usage
+
+ >> This item has 80+ lines.  Press K to kill typing <<
+
+CBBS is a 20-some K 8080 machine language program running under CP/M. 
+It is entirely self-contained.
+  CBBS uses many files on disk.  They are:
+
+ CBBS.COM
+The CP/M command file: the machine language CBBS program. 
+
+ NEXT
+Contains the next caller #, msg #, and # of active messages. If there is
+a ">> FLASH <<" it also comes from this file.
+
+ USERS
+This file contains up to 512 (optionally, 1024 or 2048) most recent
+caller entries.  Each entry looks like:
+    486, ,JOSEPH JENSEN        ,OEIAD,11/20/82,08:04,00731,016 G
+These fields are: caller number, special user flag, name, encrypted
+password, date, time, and high msg # of last call, and position number
+in user file.  The "G" is an encoded byte containing the e(X)pert,
+(P)rompt, (D)uplex, SHORT, and (C)ase flag settings (set by U command).
+
+When you call in, your name is hashed to a slot in the file.  A search
+is made forward for up to 20 names to find you.  If you are not found,
+the oldest caller in that 20 is overlaid with your call.  Thus
+misspelled or one-time callers are eventually deleted without explicit
+maintenance.
+
+ SUMMARY
+This is a file with the 2-line summary for each message. The format of
+the file is:
+^Gnnnnn,ll,mm/dd/yy,who from,who to, subject,password
+  where nnnnn is the message #, ll the # of lines.
+The password is the one the user asked for when entering the message.  A
+special password is used to completely disallow certain messages from
+being erased.
+
+ MESSAGE.Xnn
+There are from 1 to 50 message files.  Small CBBS systems might have as
+few as 1 (or more practically, say, 10). A "full blown" CBBS has 50
+message files.   NOTE:  Typically, CBBS.COM, NEXT, SUMMARY, and all
+MESSAGES are on one disk.  The following files are typically on another
+disk:
+
+ BULLETIN
+Contains exactly what you see when you log on, or use "B"
+
+ ENTINTRO
+The file typed when you go into "E" message entry, and want some help
+
+ ENTRHELP
+The help file which is interpreted when you use the "H" sub-command of
+message entry.
+
+ FIRSTIME
+When you say "Y" to "Y/N is this your first time..." this is the help
+file which is interpreted
+
+ FUNCTION
+Contains a list of supported functions.
+
+ HELP
+Contains a list of keywords, and their explanations. The "H" or "HELP"
+command accesses it.
+
+ NEWS
+A file of most-recent-at-the-top news items.  Each has a 1-line
+headline.  The NEWS command accesses it.
+
+ SCANHELP
+When you use "S" or "Q", and ask for help on searching messages, this is
+the help file which is used.
+
+ WELCOME
+Contains the welcome message typed when you log on, or ask for the "W"
+command.
+
+ LOG
+Contains a log of the date, time, caller number, baud rate, name, and
+elapsed time, for each call.  Also contains notes about attempts to kill
+protected messages, and comments (entered at the "G" command).
+
+ KILLED
+Contains the entirety of every message killed.  Allows us to review
+messages which were entered, seen, and killed without our having seen
+it.  Also allows the "RESTORE" command to easily restore any erroneously
+killed message.
+
+ SYNONYM
+Contains "translations" from "english" (or other systems) to CBBS
+commands.  This allows a neophyte to type BYE, or READ, etc. 
+Experienced users should be able to remember the main 1-letter commands
+and not need this.
+
+ ----
+NOTE: HELP files such as ENTRHELP or SCANHELP have a special format:  A
+line starting with a special character is interpreted as a question.  It
+is typed.  If the answer is "Y", then the information in the following
+lines up to the next special character, are typed.  If "N" is answered,
+the lines up to the next special character are skipped.  The HELP file
+is similar, except that the special character lines have the format
+(special char)KEYWORD=description, and there may be synonyms for each,
+such as:
+ >SUMMARY=Help with system summary function.
+ >S=Summary command
+ >QUICK=Help with system summary functions.
+ >Q=Quick summary command
+blah blah this is the details about Q and S blah blah
+----
+Hope you found this interesting and informative.
+][SOFTWARE=What software drives CBBS. (more info, msgs 9-11)
+CBBS is a 20-some K 8080 machine language program written by Ward
+Christensen, and running under the popular 8080/Z-80 CP/M operating
+system.  In source form, CBBS is a 12000+ line 8080 assembler program.
+
+Information on CBBS (ordering, pre-reqs, etc) are in msgs 9-11
+
+The ideas for CBBS came from Ward, Randy, and Y-O-U, through your
+comments.
+ ----
+CBBS is a trademark of Randy Suess and Ward Christensen. Z-80 is a
+trademark of Zilog, Inc. CP/M is a trademark of Digital Research.
+][FLIP=CBBS does not support flipping to answer mode on our modem.
+Occasionally some modems work better when the sending end (CBBS in this
+case) is in originate, rather than answer mode on the modem.  CBBS
+doesn't support that at this time.  Leave a comment if you feel it is
+really necessary.
+]################################################################
+ Following unique to particular systems, change as needed:
+
+][SIGNON=Info about signing on to CBBS
+CBBS has specific requirements for signing on.  Some people learn of the
+CBBS phone number, but only "stumble" into this information:
+
+CBBS accepts 110, 300, 600 or 1200 baud at sign-on.  Several carriage
+returns must be pressed for CBBS to detect the baud rate.  Once a C/R is
+seen at a particular speed, a second C/R's must be seen to validate the
+speed.  Thus terminals that send auto-linefeeds won't be able to log on.
+
+CBBS sends 8 bits with no parity and does not test nor set parity.
+][STAT=Determines disk storage
+Particularly used when using the M command to receive a file, and you
+want to be sure there is room for it.  If you have not executed the M
+command and entered the password, STAT shows the room left on the CBBS
+disk, which may or may not be the same as the modemming disk.
+][OTHER=info on other dial-in systems: see msgs 12-15
+][CPM=
+[DOWNLOAD=No file xfers here.
+[CP/M=CBBS doesn't allow access to CP/M
+This is only a message system.  We handle > 50 callers per day, and to
+handle upload/download would prevent us from being able to handle this
+much message traffic.  See message 15 for info on Chicago area remote
+CP/M systems, i.e. systems from which you CAN upload/download CP/M
+programs.
+][HARDWARE=What hardware makes up the system.
+CBBS/Chicago is running in a 64K N* mainframe, with 4Mhz Z-80 CPU, UDS
+modem, local terminal, hard disk, Scitronics clock board, etc.
+][CHAT=operator chat facility on CBBS.
+Typing CHAT will ring the CBBS terminal bell, and call for the operator. 
+If there is no answer, control returns to the main menu.  Leave a
+comment instead, using the (G)ood bye command.
+][SALE=
+[SELL=How to sell something via CBBS; Do we sell CBBS?
+We welcome "for sale" messages on CBBS, for items related to computer
+hobbying, ham radio, and electronic experimenting.
+-- Simply use "E" to enter the message
+-- Put "for sale" as well as W-H-A-T you are selling, IN the subject, so
+that the "Q" and "S" summary commands show WHAT is for sale, ex: "apple
+modem for sale" or "2716's for sale".  Fewer people will likely look at
+your message if you just say "for sale" and don't say what.
+--- 
+To search for items for sale, type: o;1,sale
+---
+CBBS software is for sale.  See messages 9, 10, and 11.
+][CLUB=Club news on CBBS
+[CLUBS=
+Local computer club news is on CBBS, starting at message 20.
+It is not necessarily frequently updated - depends upon who gives us
+information.
+][CBBS=What is CBBS
+[OVERVIEW=Overview of CBBS
+Keywords "CBBS", "OVERVIEW":
+CBBS, the Computerized Bulletin Board System, was conceived in January,
+1978, by Ward Christensen and Randy Suess, for communicating messages
+between computer hobbyists (HAMS, electronics experimenters, etc).
+
+][PASSWORD=Help with protecting messages with password.
+When you enter your message, you will be asked for a password.  If you
+just press return, no password is assigned, and anyone can kill it,
+although presumably the person you sent it to will.  To protect the
+message, choose any 4-characters as the password.  Then only you, or
+someone knowing your password, or the system operators, can kill it.
+][MODEM=CBBS uses a UDS modem, doesn't allow MODEM file transfers.
+][NEWBAUD=
+[ALTER=
+[BAUD=
+[1200 BAUD=Now available
+[SPEED=Help with altering system baud rate.
+[A=The Alter baud rate function.
+(Revised 07/26/83) CBBS recognizes 110, 300, 600, and 1200 baud at
+initial sign on. The (A)lter baud rate command is temporarily
+unavailable, and thus the 450, 525, and other "PMMI" baud rates are not
+available.
+
+If you came in at 300 baud and want to switch to 1200, you'll have to
+hang up and call back in with a 1200 baud modem.
+
+For neophytes: 110 to 600 baud use what is called the "Bell 103" type of
+modem, and 1200 baud uses the "Bell 212".  The means of modulating and
+demodulating the signal is different for each, and requires the
+appropriate modem on your terminal or computer.
+][TIME=Description of system Time function.
+[T=The Time function.
+
+Typing 'T' will return the current date, time and total elapsed time
+that you have been on the system.  This information is also written to
+the system Log file when you use the G command.  Please don't just hang
+up - we like to be able to do little "statistical studies" on logon
+time, etc.
+][OPERATOR=
+[OPERATORS=Who runs this CBBS.
+Ward Christensen and Randy Suess jointly designed and maintain CBBS.
+][WHY=Why does CBBS exist.
+CBBS exists because we thought it would be an interesting way to share
+ideas with other hobbyists.  We paid for and maintain it ourselves. 
+Thanks to Lloyd Smith for a memory board donation, and making things
+available at a low cost, and to Les Freed for a good buy on our drives.
+]

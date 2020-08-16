@@ -1,0 +1,88 @@
+MODEM HELP last update 09/28/83
+
+[Want help on (D)ir function
+The modem (D)ir function lists the directory, showing you which files
+are available for the (T)ype or modem (S)end command.
+
+The filename may be:
+  - blank (just press return) to list all names
+  - filename.filetype to list a specific file.
+    In this case, * and ? are allowed, like in CP/M, i.e. 
+	*.TXT
+	*.a?m
+
+Like ALL CBBS commands, you can combine the (D)ir command and filename
+on one line: D;*.TXT or D;; - the ";;" meaning a null (C/R only) entry.
+
+You can press K to abort the directory listing at any time, and return
+to the main modem menu.
+
+The (U)ser command MAY let you access additional disk areas.
+]
+[Want help on the (T)ype command
+The T command lets you type a file.  You will be asked for the name to
+type.  Use (D)ir to find the name.  You must specify a specific
+filename, i.e. you may NOT specify the name to type by using * or ? in
+the filename.
+
+While it types, pressing S (or control-S) will suspend CBBS sending you
+the file.  Press S or control-S (or Q or control-Q) to continue without
+losing a character.  If you have a simple program to capture data to
+disk or to print it, you could take advantage of this to keep CBBS from
+overrunning your buffer, disk, or printer.
+
+[Want help on some of the more "obscure" features of (T)ype
+The first is the ability to start the typing at a particular character
+string.  When asked for a filename to type, enter the name, a comma, and
+the string to search for.  The file typing will begin immediately
+FOLLOWING the matching of the string.
+
+If you press return after it starts typing, CBBS will scan for the NEXT
+occurrence of the specified character string.  Pressing C or K will
+abort the typing.
+
+The second is that pressing ^X will skip ten lines while a file is
+typing. 
+]
+]
+[Want help on the (S)end and (R)eceive functions
+S and R are capable of sending or receiving a single file, using the
+"Christensen protocol", a block oriented protocol with timeouts,
+retransmission, etc., first released in CPMUG volume 8, and since then
+in many forms as MODEMxxx, or MDMxxx, and in commercial products such as
+MITE, under the term "XMODEM" protocol, named after one variation used
+on remote CP/M systems.  NOTE that the newer features of multi-file and
+CRC are NOT supported.
+
+You will be asked for a filename, and must give a specific name (no * or
+? allowed).
+
+CBBS scans the incoming data for the control character control-X.  If
+you wish to abort the transmission, press ^X slowly three times.  There
+is no conflict with data, since CBBS looks for ^X only as control
+characters BETWEEN blocks.
+
+You can short-hand the command: s;sample.txt   or  r;newprint.dat
+
+On occasion, the disk will be "read only", i.e. you can (S)end a file to
+yourself, but not ask CBBS to (R)eceive one from you.
+
+]
+[Want help on the (U)ser command
+The U command MAY allow you to select a different user partition on the
+disk which is accessed by the (D)ir, (S)end, (R)eceive, and (T)ype
+commands.  CBBS is capable of allowing you access to a RANGE of users,
+such as 0, or 0-7, or 3-11, etc.  It is up to operator discretion how
+this is implemented.
+
+You can check by typing the U command.  It will tell you the current
+user and allowed user range.  "Public access" is generally granted only
+to user 0.
+
+The user number selected stays in effect for all subsequent D, R, S, and
+T commands.
+]
+
+IF THERE IS ANYTHING YOU DIDN'T UNDERSTAND, be sure to leave a comment
+when you (G)o so it may be cleared up in the future.  Reference "Modem
+help" in your comment.  Thanks.

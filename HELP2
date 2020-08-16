@@ -1,0 +1,182 @@
+NEW USER HELP last updated 11/22/81 15:19:16
+
+Use DEL or backspace to correct typing mistakes
+Use control-R to review how a line looks after corrections.
+To erase an entire line, use control-U.
+[Want description of how to obtain help
+
+CBBS has several kinds of help:
+
+The first is just a short summary of functions.
+[Want to know how to get it
+Just type a question mark from the main function menu.
+]
+The second kind of help is based on "keywords" such as "enter", "retrieve",
+search", "bye", etc.
+[Want to know more about keyword help
+
+Access "Keyword help" from the main function menu (The one that says
+"FUNCTION...").
+
+Type the letter "H", then press return.
+
+When asked for a keyword:
+    Type a single question mark to see a list of keywords.
+or, type the word: keywords
+    Type two question marks to see keywords and a brief
+explanation of them.
+    Should you type a keyword which is not in the file, CBBS will remember
+it so we might add it to the file later.
+[Want to execute keyword help, now
+
+OK, you can:
+
+  1.  Just be asked for a keyword: H
+  2.  List all the keywords:  H then ?
+  3.  List all keywords with a 1 line explanation: H then ??
+
+[Want to be asked for a keyword
+OK.  You can do this any time from the main menu with the "H" function.
+
+]xh
+[Want to list all the keywords
+Ok.  Here's the command to list them all. 
+
+]xh;?;;
+[Want to see a 1-line explanation of each keyword
+]xh;??;;
+
+Now executing "H" (Keyword help command) for you:
+]xh
+];end of details on keyword help
+
+The third type of help, is self-explanatory:  Some questions include a
+phrase such "or type ? for info on searching messages", or some such.  
+There is no need to explain these further.
+
+The last kind of help is what you are now doing: simply answering Yes or
+No, to some questions.
+[Want more details on how it works
+Each time we ask you a question, if you answer:
+    Y or YES	we will give you some details,
+    N or NO	we will skip the details.
+    QUIT	You leave help, and go to the main menu.
+
+];end of details on "how it works"
+];================================================
+
+Let me try to help you:
+[Want to know what kind of info is in CBBS msgs
+[Want to know how to look at message summaries
+In the main menu, type Q, then when asked for a starting message number,
+type 1.  This will list the message numbers and subjects.  You can FLAG a
+message for retrieval
+[Want to know how
+When you see a message of interest, wait until the NEXT message summary is
+printing, then press your "F" key.
+
+If you "missed" one you want to go back and flag, press "M" (or your return
+key).
+
+]
+For more details on the messages, use the S (summary) instead of Q (quick
+summary).  It shows the date, who from, and who to, in addition to the
+message number and subject which Q prints.
+
+]
+Message content overview:
+
+The message numbers below 20 contain information about CBBS, local computer
+stores, other dial-in hobbyist systems, etc.
+
+Message numbers from 20-30 give information about local clubs.
+
+The remaining messages are about a variety of computer-hobbyist and ham
+related subjects.
+
+Returning to main menu...
+]q
+[Want to leave CBBS
+Use the "G" command (means "good bye") from the main menu. You will be
+asked if you want to leave comments. I'll type it for you now:
+]xg
+[Want to stop your terminal bell from ringing
+Use the "P" (Prompt bell) command.  Sorry, but I realize "B" would be
+easier to remember, but that was taken for "Bulletin".  I'll execute "P"
+command for you now:
+]xp
+[Want to look over the message summaries on CBBS
+Use the "S" (summary) command, or the "Q" (quick summary) command.
+
+It will ask for a starting message number.  To start at the beginning, use
+1.  To just review recent messages, use -50, which means to review the most
+recent 50 messages.
+
+Returning to main menu...
+]q
+[Want to see the Welcome again
+Just type W in the main menu.  I'll do it for you.
+]xw
+[Want to see the Bulletins again
+Use "B" in the main menu:  I'll do it for you.
+]xb
+[Want to leave a message
+Use the "E" (Enter message) command in the main function menu.  Please
+limit the subject matter to Ham/computer/electronic hobby topics, and
+personal messages between such people.
+[...or did you only want to leave a message for the operators
+In that case, the "G" (Good bye) command allows you to leave
+comments, which only the operators can see.
+
+Returning to main menu.
+]quit
+Going into message entry via the "E" command:
+]xe
+[Is the front part of each line being cut off
+	Your terminal needs "nulls" sent to it.  By pressing the "N"
+	key while CBBS types, you will get some, 5 more for every time
+	you press N.  You can also use the "N" (Nulls) command of the
+	main menu, to set EXACTLY how many you need.
+	The # of nulls you need is the first # in the next
+	line that prints:
+123456789	here it is again
+123456789
+	Here are 8 nulls:  Use "N" to set the exact number needed
+]xn;8
+[Are characters you type showing up twice
+Then your terminal, or modem, is "half duplex" so CBBS has to be, too.  Use
+the "D" (Duplex) command to change it. I'll do it for you.  Type D to
+change back:
+
+>> Remember, nothing you type will echo.  Type "D" to go back to echoing <<
+
+]xd
+[Want to see if you have any messages
+Type the command: MINE
+It checks for messages to your full name or your first name only.
+
+]xmine
+[Want to erase an old message from or to you
+You first have to know the message number
+[Do you know its message number
+Then simply type K in the main menu, and then when asked, give
+the message number.  Please be careful not to kill someone
+else's message.
+
+Returning to main menu...
+]q
+OK,  to find the message number, you have to look at the
+message summaries.  Do so using the following command:
+	MINE
+Returning to main menu...
+]q
+
+Sorry, but those are the most commonly asked questions.  I have no more in
+mind.  I suggest:
+
+    1.	Trying the "H" command, and looking over the keywords, by typing
+"?" when asked for a keyword, then type any keyword which might help.
+
+    2.	Leave CBBS by using the "G" (Good bye) command, then when asked if
+you want to leave comments, do so, telling us what you needed more help
+with.

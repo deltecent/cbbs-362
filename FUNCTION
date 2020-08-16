@@ -1,0 +1,19 @@
+---MAJOR FUNCTIONS: Press: C: skip to next section; K: abort back to menu.
+(E)nter message |(H)ELP <==     |(Q)uick summary
+(G)ood bye      |(R)etrieve msg |(S)ummarize msgs (see also (O) below)
+]---MINOR FUNCTIONS: Press K-to abort
+# Print caller # etc|(P)rompt bell on/off |(U)ser update
+(A)lter Baud rate     |(K)ill message	  |(V)ideo backspace
+(B)ulletin reprint    |(N)ulls: How many? |(W)elcome reprint
+(C)ase upper/lower    |(O)ne line summary |e(X)pert user mode
+(D)uplex: echo on/off |(T)ime/date/E.T.   |
+]
+CHAT See if operator is available to HELP via keyboard
+HELP New user help; (vs. H:  keyword based help)
+MINE find messages TO you.
+NEWS What's new on CBBS
+SHORT Shorten output: no dup spaces, etc
+] >> For details, type H, press return, then type the command letter. <<
+New users: If you don't know what else to do, start with:  o;1
+   or q;1 for quick subject-only summary. If short on time,
+   or to only see new msgs, do: o;-50 or shorter yet: q;-50
