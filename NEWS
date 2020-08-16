@@ -1,0 +1,269 @@
+Welcome to the 09/24/83 edition of CBBS/NEWS (269 lines)
+
+While it runs, type:
+
+ C  cancel item, go to next
+ S  start/stop typing news
+ K  kill news; go back to menu
+
+]09/24/83 CHANGES TO MESSAGE EDIT SUBCOMMAND
+The (E)dit subcommand of message (E)ntry is more efficient.  Suppose you
+had the word "messag" in line 3, and it should be "message".  At best,
+you could say "e;3", but then had to wait to be prompted and reply
+"/sag/sage/" (the closing "/" is optional).  Now, the "E", line number,
+from and to strings may all be stacked with ";"s: e;3;sag;sage; (the
+closing ";" is optional).  It will repeat line before and after the
+change.
+
+]U COMMAND: RECORD "STATE" OF CBBS.
+A new User command: "U", records the state of various commonly changed
+CBBS flags, specifically: e(X)pert user mode, (P)rompt bell on/off,
+(D)uplex, (C)ase, and SHORT.  
+
+These are Only set by the U command, and allow you to log in the next
+time with n;firstname;lastname - and such things as "x;p" will
+automatically be set.
+
+]11/14/82 #1 THRU #9 REMEMBERS FLAGGED MSGS
+When you flag a message, (flagging with F or M during summary print),
+the first 9 msg #'s seen will be remembered in something akin to
+"variables" called #1 thru #9.  These numbers may subsequently be used
+in K or R commands.
+
+Further, in expert user mode, using the OR, QR, SR commands, or "MINE"
+(which executes "OR;1,T=firstname lastname,T=firstname  "), msgs
+retrieved will be remembered.  Thus if MINE showed you have 3 msgs, they
+may be referred to as #1, #2, and #3.  I hope eventually to add a "reply
+#n" command, but its not here yet. This is another attempt to minimize
+the need to remember or type actual message numbers.  You could
+theoretically now operate CBBS without typing ANY actual msg number.
+
+NOTE: Executing A-N-Y summary command (O, Q, S) forgets the previously
+marked msgs, so finish using #n before issuing any other # command.
+
+Also note the "#" command (prints statistics) also now shows you the
+marked message numbers.
+
+]USER LOGGING IMPLEMENTED
+When you log on, CBBS will place you in a 512-entry USER file.  Each
+time you subsequently log on, it will tell you of your last logon and
+the high message number at that previous time.
+
+]11/12/82 "*" = PREVIOUS HIGH MESSAGE NUMBER
+If you have previously logged on with user logging on CBBS, "*" will
+refer to the high number the previous time you called in.  Thus "o;*"
+will do a one-line summary of each message entered since your last
+logon.
+
+O;*	<== reminder
+
+]11/07/82 "O" command prints one-line summary.
+While an occasional line will wrap 80 columns due to length, in general
+the (O)ne line summary will allow you to see more at one time on your
+screen.
+
+]10/31/82 R;-nn NOW CONSISTENT WITH S;-nn
+R;-nn now subtracts "nn" from the next message number the system would
+use, and attempts to retrieve that message.  Thus if 1000 were the next
+message number, r;-50 would attempt to retrieve 950.  This is now
+consistent with S;-nn which would start a summary at 950.
+
+R;- and r;+ (i.e. no numbers) have the same effect as before -
+retrieving ten messages sequentially back from (-) or ahead from (+)
+which ever message number was most recently referenced.  This allows
+"r;-10;+" to retrieve the last 10 msgs, in order.  (you used to have to
+do R;- to retrieve them backwards.)
+
+]10/30/82 MODEM COMMANDS IMPROVED: BETTER (D)IR, NEW (H)ELP SUBCOMMAND.
+"M" command (D)ir is now more "friendly", showing K instead of extent
+and number of sectors.  The total K and number of files is also shown.
+
+The prompt for filename when using (D)ir is now more friendly - telling
+you ? and * allowed, or press return for all files.  
+
+A new (M)odem subcommand: (H)elp, gives details on the other modem
+commands.
+
+]10/30/82 ^L SHOWS LINE OF "_____"
+The "^_" command introduced 10/16 to show you via "fill in the blanks"
+how big an input field is, has now been changed to ^L, because of 
+terminals that can't generate the ^_.  Most useful in message entry for
+determining length of the SUBJ: field.
+
+]10/19/82 MINOR IMPROVEMENTS DOCUMENTED.
+When executing the "+" option within message (R)etrieve, CBBS used to
+say "No msg xxxxx" for each one not found.  Now it just prints a "- ". 
+Thus if you hit a block of no-messages, it types - - - - etc.  Press ^K
+to abort. 
+In the future, I'll check for the end of the messages, and stop
+automatically.
+
+P.S. The + command is a bit faster now - when switching from an even to
+an odd msg #, they are in the same message file, so I detect this and
+save  re-opening and scanning.  (message 506 and 507 are stored in
+"message.x06" - that's how I spread them among 50 msg files).
+
+]10/17/82 TRUNCATE REWRITTEN
+You will have many less lines "truncated" now that 80 column input is
+supported.  However, I also re-wrote the truncation routine to be more
+user friendly.  It backs up one word, then puts you BACK INTO INPUT just
+as if you have typed ^R.  You can thus ^U the entire line, or ^W to back
+up more words, etc - or just press return to have the line accepted as
+is.
+
+]10/16/82 EXPERIMENTAL VERSION IN TESTING.  COMMENTS APPRECIATED.
+In response to your comments, and ideas from Randy and Ward, a lot of
+new
+features were put on today.  Each will have its own news item.
+
+* 80 column output;
+* Message continuation;
+* Auto-message flagging;
+* A "MINE" command finds messages TO you;
+* Shortened message numbers in (R)etrieve;
+* ESC now supported as ^U (ala IBM PC);
+* "Fill in the blanks" via ^L to see how long an input field is;
+* File transfer, via pre-arranged password;
+* Operator "CHAT" command;
+
+==> Please Report any bugs. 
+==> Please report any suggested changes via comments when you (G)o.
+
+]80 COLUMN OUTPUT
+
+Messages are now 20 lines, and 78 columns wide.  Comments are also 78
+wide.  Most built-in files (help, etc) are also 80 columns wide. 
+Eventually I forsee variable-width output for messages.
+
+]MESSAGE CONTINUATION
+If you have something to say that won't fit in 20 lines, finish the
+first message, and use the new command:
+
+	CONT
+
+to continue the message.  It auto-enters the E command and all fields,
+with a subject of <Cont'd>
+
+]AUTO MESSAGE FLAGGING
+
+Have you ever wanted to flag every message you summarized, such as when
+looking for all messages about certain subjects?  Variations of the "Q"
+and "S" summary commands are available available to e(X)pert users to
+retrieve all selected messages:
+
+	SR;starting msg,search argument
+and	
+	QR;starting msg,search argument
+
+P-L-E-A-S-E be conservative with them, as it is now very easy to waste a
+lot of time on the system retrieving many more messages than you want. 
+The more selective you are in your search argument, the better.  Good
+examples are: 
+
+	qr;1,1200	find all msgs about 1200 baud modems
+	sr;1,f=tom johnson  find msgs from a particular user
+
+]"MINE" COMMAND TO FIND YOUR MESSAGES
+
+"In response to frequent requests", a MINE has been implemented.  It
+executes the new auto-summary/retrieve, to find messages to you. 
+Specifically, it executes the command:
+
+	"OR;1,T=firstname lastname,T=firstname  "
+
+This will find msgs to you by either your full name, or by your first
+name only (for those like WARD, RANDY, who are often called by first
+name only).
+
+P-L-E-A-S-E: periodically review messages FROM yourself, to see if they
+are obsolete, or if the person you sent it to forgot to kill it after
+reading it.  The alternative, having MINE scan for message both TO and
+FROM you, is a pain, (it was initially implemented that way, but
+changed).
+
+]SHORTER MESSAGE NUMBERS IN (R)ETRIEVE
+
+When you first type R, the message number you enter will be taken
+literally.
+
+From then on, the number you enter will be overlaid on the RIGHT of the
+previous message number.  Thus:
+
+	r;500;1;2;23;9;00001;2;3
+
+is now shorthand for the former:
+
+	r;500;501;502;523;529;1;2;3
+
+Note that to "UNDO" the leading digits (as in example going back to
+message 1), it was necessary to specify the leading 0's.
+
+If you do:
+
+	r;500;2
+
+to retrieve 500 and 502, then get out of retrieve, and come back in
+with:
+
+	r;3
+
+you will be getting message 3, not 503.  This was done because new users
+might be confused by the shorthand.  Seems the best compromise.
+
+]CONTROL-L TELLS LENGTH OF INPUT FIELD.
+
+Often you want to take advantage of the maximum length of input fields,
+particularly when entering a message and specifying "WHO TO" and
+"SUBJECT".  Now, typing ^_ will CR/LF, then type a line of _____ letting
+you know exactly how long the input field is.  You can type this control
+character after partially answering - it will print the "___" line, then
+fill it in with what you have typed.  Example:
+
+Subject:?	At this time, you press ^_ and get:
+______________________________
+
+CBBS then sends a CR without an LF, for you to key into.
+
+^L acts exactly like ^R, except that it prints the line of "___" first.
+
+]10/16/82 FILE TRANSFER (SOMEWHAT) AVAILABLE
+
+A new command: M is available to support file transfer.  You must have
+arranged in advance to know the password.  The disk and user number
+accessed is pre-arranged by the operator.  M has a sub-menu supporting
+the following commands:
+
+	D	directory of accessible disk
+	T	type a file
+	R	receive a file from you
+	S	Send a file to you
+	M	return to main menu.
+
+Any of the main menu functions will also execute from the modem function
+menu.  To execute a function which is the same letter in both, you must
+explicitly go to the main menu with M first.  For example, to see the
+time, but then return to the modem menu, type:
+
+	m;t;m
+
+The first "M" switches to the main menu; the "T" executes the time
+function; the second "M" returns to the modem menu.  (You only have to
+enter the modem transfer password once - it remains accessible from then
+on).
+
+Additionally, a STAT command which shows the space remaining on the
+designated disk is available, to know if something you want to send will
+fit.
+
+The protocol supported is that of the original MODEM2 program. - i.e. no
+CRC.
+
+If you want to abort the transfer, a special test for a total of three
+^X characters is made.  Type one about every two seconds until the
+transfer aborts.
+
+]NEW COMMAND: CHAT to call the operator.
+
+If you want to ask somthing of the operator, you can see if they are
+around by typing the CHAT command.  It rings the terminal bell for a few
+seconds, then if the operator didn't show up, returns to the main menu.
