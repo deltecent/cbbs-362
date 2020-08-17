@@ -35,6 +35,10 @@ SOFTWARE: WARD (CHRISTENSEN)  (312) 849-6279
 
 CBBS/NV is here to preserve what Ward and Randy started in the 1978.
 
+## Why CBBS/NV?
+
+Why not? Let's face it. Computers in the 70's and 80's were awesome and I was glad to be part of it.
+
 ## CBBS/NV Access
 
 telnet://cbbs.mitsaltair.com:8800
