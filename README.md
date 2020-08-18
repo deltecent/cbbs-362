@@ -1,6 +1,6 @@
 ## What is CBBS?
 
-On Feburary 16, 1978, Ward Chirstensen and Randy Suess launched what is believed to be the very first Bullentin Board System, CBBS/CHICAGO.
+On Feburary 16, 1978, Ward Christensen and Randy Suess launched what is believed to be the very first Bullentin Board System, CBBS/CHICAGO.
 
 ```
         TERMINAL NEED NULLS?  TYPE CTL-N WHILE THIS TYPES:
