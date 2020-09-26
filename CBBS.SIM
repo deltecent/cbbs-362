@@ -1,0 +1,14 @@
+set cpu 8080
+set cpu noaltairrom
+#set debug -F stdio
+dep clock 2000
+dep sr C0
+set sio nosleep
+set ss1 enable
+set pmmi enable
+#set pmmi debug=status;connect
+attach pmmi -U 8800
+d tracks[0-1] 2048
+attach dsk0 CBBS362-8MB-56K.DSK
+load DBL.BIN ff00
+go ff00
