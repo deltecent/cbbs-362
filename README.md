@@ -31,21 +31,21 @@ SOFTWARE: WARD (CHRISTENSEN)  (312) 849-6279
 ----------------------   BULLETIN   ----------------------
 ```
 
-## What is CBBS/NV?
+## What is CBBS/TN?
 
-CBBS/NV is here to preserve what Ward and Randy started in the 1978.
+CBBS/TN is here to preserve what Ward and Randy started in the 1978.
 
-## Why CBBS/NV?
+## Why CBBS/TN?
 
 Why not? Let's face it. Computers in the 70's and 80's were awesome and I was glad to be part of it.
 
-## CBBS/NV Access
+## CBBS/TN Access
 
 telnet://cbbs.mitsaltair.com:8800
 
-## CBBS/NV Simulated System
+## CBBS/TN Simulated System
 
-* AltairZ80 running on macOS
+* AltairZ80 running on Linux
 * Intel 8080 @ 2MHz
 * 56K RAM
 * MITS FDC
@@ -55,4 +55,4 @@ telnet://cbbs.mitsaltair.com:8800
 * 8MB Floppy Disk
 * CP/M 2.2 for Altair with 8MB BIOS by Mike Douglas
 * CBBS BIOS for PMMI by Patrick Linstruth
-* CBBS V3.6.2
+* CBBS V3.6.2g
